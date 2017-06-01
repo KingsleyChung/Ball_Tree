@@ -40,9 +40,9 @@ int main() {
     //    std::cout << std::endl;
     //}
     //system("pause");
-
     BallTree ball_tree1;
     ball_tree1.buildTree(n, d, data);
+    system("pause");
 
 	/*BallTree ball_tree1;
 	ball_tree1.buildTree(n, d, data);

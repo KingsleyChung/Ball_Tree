@@ -5,16 +5,17 @@
 #include <cmath>
 
 bool BallTree::buildTree(int n, int d, float** data) {
-    buildSubTree(root, -1, n, d, data);
+    buildSubTree(root, 0, n, d, data);
     return true;
 }
-void BallTree::buildSubTree(Node* subroot, int previousIndex, int n, int d, float** data) {
+void BallTree::buildSubTree(Node* subroot, int index, int n, int d, float** data) {
     //如果数据量小于N0，则节点为叶子节点
     if (n < N0) {
-        subroot = new Node(previousIndex + 1, n, d, nullptr, 0);
+        subroot = new Node(index + 1, n, d, nullptr, 0);
         //复制数据
         subroot->data = new float*[n];
         for (int i = 0; i < n; i++) {
+            subroot->data[i] = new float[d];
             for (int j = 0; j < d; j++) {
                 subroot->data[i][j] = data[i][j];
             }
@@ -30,7 +31,9 @@ void BallTree::buildSubTree(Node* subroot, int previousIndex, int n, int d, floa
     //找到距离A最远的数据B
     float* B = FindFurthestData(A, data, n, d);
     //记录节点信息
-    subroot = new Node(previousIndex + 1, n, d, FindCenter(data, n, d), DistanceBetween(subroot->center, A, d));
+    float* center = FindCenter(data, n, d);
+    float radius = DistanceBetween(center, A, d);
+    subroot = new Node(index, n, d, center, radius);
     //分裂树
     MakeBallTreeSplit(A, B, subroot, n, d, data);
 }
@@ -50,9 +53,9 @@ void BallTree::MakeBallTreeSplit(float* A, float* B, Node* subroot, int n, int d
         }
     }
     //建立左子树
-    buildSubTree(subroot->left, subroot->index, dataCountOfLeft, d, dataOfLeft);
+    buildSubTree(subroot->left, subroot->index * 2, dataCountOfLeft, d, dataOfLeft);
     //建立右子树
-    buildSubTree(subroot->right, subroot->index, dataCountOfRight, d, dataOfRight);
+    buildSubTree(subroot->right, subroot->index * 2 + 1, dataCountOfRight, d, dataOfRight);
 }
 float* BallTree::FindFurthestData(float* x, float** &data, int n, int d) {
     float furthestDistance = 0;             //记录最远距离的平方
