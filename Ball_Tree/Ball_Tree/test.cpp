@@ -41,6 +41,8 @@ int main() {
     //}
     //system("pause");
 
+    BallTree ball_tree1;
+    ball_tree1.buildTree(n, d, data);
 
 	/*BallTree ball_tree1;
 	ball_tree1.buildTree(n, d, data);
