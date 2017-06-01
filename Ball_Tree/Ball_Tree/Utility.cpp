@@ -6,11 +6,7 @@
 
 using namespace std;
 
-bool read_data(
-	int n,
-	int d,
-	float** &data,
-	const char* file_name)
+bool read_data(int n, int d, float** &data, const char* file_name)
 {
 	FILE* fin = fopen(file_name, "r");
 	if (!fin) {

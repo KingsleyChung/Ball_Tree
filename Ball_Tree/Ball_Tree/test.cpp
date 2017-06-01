@@ -3,7 +3,7 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define YAHOO
+#define MNIST
 
 #ifdef MNIST
 char dataset[L] = "Mnist";
@@ -11,9 +11,9 @@ int n = 600, d = 50;
 int qn = 1000;
 #endif
 
-#ifdef YAHOO
-char dataset[L] = "Yahoo";
-int n = 624, d = 300;
+#ifdef NETFLIX
+char dataset[L] = "Netflix";
+int n = 17770, d = 50;
 int qn = 1000;
 #endif
 
@@ -32,7 +32,17 @@ int main() {
 		return 1;
 	}
 
-	BallTree ball_tree1;
+    ////Kingsley added: for testing read_data function
+    //for (int i = 0; i < n; i++) {
+    //    for (int j = 0; j < d; j++) {
+    //        std::cout << data[i][j] << " ";
+    //    }
+    //    std::cout << std::endl;
+    //}
+    //system("pause");
+
+
+	/*BallTree ball_tree1;
 	ball_tree1.buildTree(n, d, data);
 	ball_tree1.storeTree(index_path);
 
@@ -57,7 +67,7 @@ int main() {
 
 	for (int i = 0; i < qn; i++) {
 		delete[] query[i];
-	}
+	}*/
 
 	return 0;
 }

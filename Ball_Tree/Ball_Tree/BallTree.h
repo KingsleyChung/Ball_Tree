@@ -3,8 +3,19 @@
 
 #define N0 20
 
+class Node{
+public:
+    int index;
+    double radius;
+    Node* left;
+    Node* right;
+    float** data = nullptr;
+};
+
 class BallTree {
 public:
+    Node* root;
+
 	BallTree();
 	~BallTree();
 
