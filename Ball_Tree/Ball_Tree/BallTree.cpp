@@ -3,15 +3,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include <cmath>
-
+#include <iostream> // for testing
+using namespace std; // for testing
 bool BallTree::buildTree(int n, int d, float** data) {
-    buildSubTree(root, 0, n, d, data);
+    buildSubTree(root, 1, n, d, data);
     return true;
 }
-void BallTree::buildSubTree(Node* subroot, int index, int n, int d, float** data) {
+void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &data) {
     //如果数据量小于N0，则节点为叶子节点
     if (n < N0) {
-        subroot = new Node(index + 1, n, d, nullptr, 0);
+        subroot = new Node(index, n, d, nullptr, 0);
         //复制数据
         subroot->data = new float*[n];
         for (int i = 0; i < n; i++) {
@@ -26,18 +27,20 @@ void BallTree::buildSubTree(Node* subroot, int index, int n, int d, float** data
     srand((unsigned)time(NULL));
     int randomNum = rand() % n;
     float* x = data[randomNum];
+    //cout << randomNum << endl;//for testing
     //找到距离x最远的数据A
     float* A = FindFurthestData(x, data, n, d);
     //找到距离A最远的数据B
     float* B = FindFurthestData(A, data, n, d);
     //记录节点信息
     float* center = FindCenter(data, n, d);
+    //printVector(center, d);//for testing
     float radius = DistanceBetween(center, A, d);
     subroot = new Node(index, n, d, center, radius);
     //分裂树
     MakeBallTreeSplit(A, B, subroot, n, d, data);
 }
-void BallTree::MakeBallTreeSplit(float* A, float* B, Node* subroot, int n, int d, float** data) {
+void BallTree::MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data) {
     //声明变量
     int dataCountOfLeft = 0, dataCountOfRight = 0;      //记录左右节点数据个数
     float** dataOfLeft = new float*[n];                 //记录左节点数据
@@ -53,11 +56,17 @@ void BallTree::MakeBallTreeSplit(float* A, float* B, Node* subroot, int n, int d
         }
     }
     //建立左子树
+    //for (int i = 0; i < dataCountOfLeft; i++) {//for testing
+    //    printVector(dataOfLeft[i], d);
+    //}
     buildSubTree(subroot->left, subroot->index * 2, dataCountOfLeft, d, dataOfLeft);
     //建立右子树
+    //for (int i = 0; i < dataCountOfRight; i++) {//for testing
+    //    printVector(dataOfRight[i], d);
+    //}
     buildSubTree(subroot->right, subroot->index * 2 + 1, dataCountOfRight, d, dataOfRight);
 }
-float* BallTree::FindFurthestData(float* x, float** &data, int n, int d) {
+float* BallTree::FindFurthestData(float* &x, float** &data, int n, int d) {
     float furthestDistance = 0;             //记录最远距离的平方
     int furthestDataPos = 0;                //记录最远距离数据在数组中的位置
     for (int i = 0; i < n; i++) {
@@ -70,10 +79,11 @@ float* BallTree::FindFurthestData(float* x, float** &data, int n, int d) {
             furthestDataPos = i;
         }
     }
+    //cout << furthestDataPos << endl;//for testing
     return data[furthestDataPos];           //返回最远距离数据
 }
 
-int BallTree::CloserTo(float* selectedData, float* A, float* B, int d) {
+int BallTree::CloserTo(float* &selectedData, float* &A, float* &B, int d) {
     float distanceToA = 0;                  //选中数据到A的距离
     float distanceToB = 0;                  //选中数据到B的距离
     for (int j = 0; j < d; j++) {
@@ -83,22 +93,23 @@ int BallTree::CloserTo(float* selectedData, float* A, float* B, int d) {
     return distanceToA <= distanceToB ? 1 : 2;//离A较近或到A、B距离相等返回1，其他返回2
 }
 
-float* BallTree::FindCenter(float** data, int n, int d) {
+float* BallTree::FindCenter(float** &data, int n, int d) {
     float* center = new float[d];           //圆心向量
     for (int j = 0; j < d; j++) {           //向量的每个维度
         float sumOfOneDimension = 0;        //一个维度的和
         for (int i = 0; i < n; i++) {       //每个向量
             sumOfOneDimension += data[i][j];
         }
-        center[j] = sumOfOneDimension / (d + 0.0);//平均值
+        center[j] = sumOfOneDimension / (n + 0.0);//平均值
     }
     return center;
 }
 
-float BallTree::DistanceBetween(float* center, float* point, int d) {
+float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
     float totalDistanceSquare = 0;
     for (int i = 0; i < d; i++) {
-        totalDistanceSquare += (center[i] - point[i]) * (center[i] - point[i]);
+        totalDistanceSquare += (pointA[i] - pointB[i]) * (pointA[i] - pointB[i]);
     }
+    //cout << sqrt(totalDistanceSquare) << endl;//for testing
     return sqrt(totalDistanceSquare);
 }

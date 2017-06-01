@@ -3,7 +3,19 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define MNIST
+#define FLAT
+
+#ifdef FLAT
+char dataset[L] = "Flat";
+int n = 20, d = 2;
+int qn = 1000;
+#endif
+
+#ifdef KINGSLEY
+char dataset[L] = "Kingsley";
+int n = 20, d = 4;
+int qn = 1000;
+#endif
 
 #ifdef MNIST
 char dataset[L] = "Mnist";
@@ -32,17 +44,20 @@ int main() {
 		return 1;
 	}
 
-    ////Kingsley added: for testing read_data function
-    //for (int i = 0; i < n; i++) {
-    //    for (int j = 0; j < d; j++) {
-    //        std::cout << data[i][j] << " ";
-    //    }
-    //    std::cout << std::endl;
-    //}
-    //system("pause");
+    //Kingsley added: for testing read_data function=====================================
+    /*for (int i = 0; i < n; i++) {
+        for (int j = 0; j < d; j++) {
+            std::cout << data[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    system("pause");*/
+    //for testing build tree and display result
     BallTree ball_tree1;
     ball_tree1.buildTree(n, d, data);
+    ball_tree1.preorderPrint(d);
     system("pause");
+    //===================================================================================
 
 	/*BallTree ball_tree1;
 	ball_tree1.buildTree(n, d, data);

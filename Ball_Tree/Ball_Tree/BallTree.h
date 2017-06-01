@@ -1,7 +1,10 @@
 #ifndef __BALL_TREE_H
 #define __BALL_TREE_H
 
-#define N0 20
+#include <stdio.h>
+#include <iostream>
+using namespace std;//for testing
+#define N0 3
 
 class Node{
 public:
@@ -40,12 +43,37 @@ public:
 		int d,
 		float** data);
 
-    void buildSubTree(Node* subroot, int previousIndex, int n, int d, float** data);
-    void MakeBallTreeSplit(float* A, float* B, Node* subroot, int n, int d, float** data);
-    float* FindFurthestData(float* x, float** &data, int n, int d);
-    int CloserTo(float* selectedData, float* A, float* B, int d);
-    float* FindCenter(float** data, int n, int d);
-    float DistanceBetween(float* center, float* point, int d);
+    void buildSubTree(Node* &subroot, int previousIndex, int n, int d, float** &data);
+    void MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data);
+    float* FindFurthestData(float* &x, float** &data, int n, int d);
+    int CloserTo(float* &selectedData, float* &A, float* &B, int d);
+    float* FindCenter(float** &data, int n, int d);
+    float DistanceBetween(float* &pointA, float* &pointB, int d);
+    void preorderPrint(int d) {// for testing
+        preorderTesting(root, d);
+    }
+    void preorderTesting(Node* subroot, int d) { // for testing
+        if (subroot == nullptr) {
+            return;
+        }
+        if (subroot->data != nullptr) {
+            printf("index:%d dataCount:%d\n", subroot->index, subroot->dataCount);
+            for (int i = 0; i < subroot->dataCount; i++) {
+                printVector(subroot->data[i], d);
+            }
+            return;
+        }
+        printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
+        preorderTesting(subroot->left, d);
+        preorderTesting(subroot->right, d);
+    }
+    void printVector(float* data, int d) {//for testing
+        cout << "(";
+        for (int i = 0; i < d - 1; i++) {
+            cout << data[i] << ", ";
+        }
+        cout << data[d - 1] << ")\n";
+    }
 
 	bool storeTree(
 		const char* index_path);
