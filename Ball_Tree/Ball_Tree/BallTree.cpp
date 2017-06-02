@@ -46,7 +46,7 @@ void BallTree::MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, in
     float** dataOfLeft = new float*[n];                 //记录左节点数据
     float** dataOfRight = new float*[n];                //记录右节点数据
     for (int i = 0; i < n; i++) {
-        if (CloserTo(data[i], A, B, d) == 1) {
+        if (CloserTo(data[i], A, B, d) == 1) {          //距离A较近或距离A、B相等
             dataOfLeft[dataCountOfLeft] = data[i];
             dataCountOfLeft++;
         }

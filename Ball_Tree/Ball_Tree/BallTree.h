@@ -17,7 +17,7 @@ public:
     Node* right;            //右子树
     float** data;           //若是叶子节点，储存数据
 
-    Node(int _index, int _dataCount, int _dimension, float* _center, float _radius) {
+    Node(int _index, int _dataCount, int _dimension, float* _center, float _radius) {       //构造函数
         index = _index;
         dataCount = _dataCount;
         dimension = _dimension;
@@ -43,16 +43,16 @@ public:
 		int d,
 		float** data);
 
-    void buildSubTree(Node* &subroot, int previousIndex, int n, int d, float** &data);
-    void MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data);
-    float* FindFurthestData(float* &x, float** &data, int n, int d);
-    int CloserTo(float* &selectedData, float* &A, float* &B, int d);
-    float* FindCenter(float** &data, int n, int d);
-    float DistanceBetween(float* &pointA, float* &pointB, int d);
-    void preorderPrint(int d) {// for testing
+    void buildSubTree(Node* &subroot, int previousIndex, int n, int d, float** &data);              //建立二叉树
+    void MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data);      //分裂
+    float* FindFurthestData(float* &x, float** &data, int n, int d);                                //寻找距离最远的数据
+    int CloserTo(float* &selectedData, float* &A, float* &B, int d);                                //比较选定点距离A、B哪个比较近，距离A较近或距离A、B相等返回1，其他返回2
+    float* FindCenter(float** &data, int n, int d);                                                 //计算圆心
+    float DistanceBetween(float* &pointA, float* &pointB, int d);                                   //计算两向量的距离
+    void preorderPrint(int d) {// for testing                                                       //先序遍历并打印相关信息（测试用）
         preorderTesting(root, d);
     }
-    void preorderTesting(Node* subroot, int d) { // for testing
+    void preorderTesting(Node* subroot, int d) { // for testing                                     //先序遍历并打印相关信息（测试用）
         if (subroot == nullptr) {
             return;
         }
@@ -67,7 +67,7 @@ public:
         preorderTesting(subroot->left, d);
         preorderTesting(subroot->right, d);
     }
-    void printVector(float* data, int d) {//for testing
+    void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
         cout << "(";
         for (int i = 0; i < d - 1; i++) {
             cout << data[i] << ", ";
