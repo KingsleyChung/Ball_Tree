@@ -35,7 +35,8 @@ void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &da
     //记录节点信息
     float* center = FindCenter(data, n, d);
     //printVector(center, d);//for testing
-    float radius = DistanceBetween(center, A, d);
+    float* furthestDataFromCenter = FindFurthestData(center, data, n, d);
+    float radius = DistanceBetween(center, furthestDataFromCenter, d);
     subroot = new Node(index, n, d, center, radius);
     //分裂树
     MakeBallTreeSplit(A, B, subroot, n, d, data);
