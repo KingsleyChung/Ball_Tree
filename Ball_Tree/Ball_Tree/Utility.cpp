@@ -17,9 +17,9 @@ bool read_data(int n, int d, float** &data, const char* file_name)
 	int id;
 	data = new float*[n];
 	for (int i = 0; i < n; i++) {
-		data[i] = new float[d];
-		fscanf(fin, "%d", &id);
-		for (int j = 0; j < d; j++) {
+		data[i] = new float[d + 1];
+		fscanf(fin, "%f", &data[i][0]);
+		for (int j = 1; j <= d; j++) {
 			fscanf(fin, "%f", &data[i][j]);
 		}
 	}

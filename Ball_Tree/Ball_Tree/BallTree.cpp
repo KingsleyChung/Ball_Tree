@@ -17,7 +17,7 @@ void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &da
         subroot->data = new float*[n];
         for (int i = 0; i < n; i++) {
             subroot->data[i] = new float[d];
-            for (int j = 0; j < d; j++) {
+            for (int j = 0; j <= d; j++) {
                 subroot->data[i][j] = data[i][j];
             }
         }
@@ -72,7 +72,7 @@ float* BallTree::FindFurthestData(float* &x, float** &data, int n, int d) {
     int furthestDataPos = 0;                //记录最远距离数据在数组中的位置
     for (int i = 0; i < n; i++) {
         float result = 0;                   //记录此次遍历数据距离的平方
-        for (int j = 0; j < d; j++) {
+        for (int j = 1; j <= d; j++) {
             result += (x[j] - data[i][j]) * (x[j] - data[i][j]);
         }
         if (result > furthestDistance) {    //如果距离大于之前记录的最远距离
@@ -87,7 +87,7 @@ float* BallTree::FindFurthestData(float* &x, float** &data, int n, int d) {
 int BallTree::CloserTo(float* &selectedData, float* &A, float* &B, int d) {
     float distanceToA = 0;                  //选中数据到A的距离
     float distanceToB = 0;                  //选中数据到B的距离
-    for (int j = 0; j < d; j++) {
+    for (int j = 1; j <= d; j++) {
         distanceToA += (A[j] - selectedData[j]) * (A[j] - selectedData[j]);
         distanceToB += (B[j] - selectedData[j]) * (B[j] - selectedData[j]);
     }
@@ -96,7 +96,7 @@ int BallTree::CloserTo(float* &selectedData, float* &A, float* &B, int d) {
 
 float* BallTree::FindCenter(float** &data, int n, int d) {
     float* center = new float[d];           //圆心向量
-    for (int j = 0; j < d; j++) {           //向量的每个维度
+    for (int j = 1; j <= d; j++) {           //向量的每个维度
         float sumOfOneDimension = 0;        //一个维度的和
         for (int i = 0; i < n; i++) {       //每个向量
             sumOfOneDimension += data[i][j];
@@ -108,7 +108,7 @@ float* BallTree::FindCenter(float** &data, int n, int d) {
 
 float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
     float totalDistanceSquare = 0;
-    for (int i = 0; i < d; i++) {
+    for (int i = 1; i <= d; i++) {
         totalDistanceSquare += (pointA[i] - pointB[i]) * (pointA[i] - pointB[i]);
     }
     //cout << sqrt(totalDistanceSquare) << endl;//for testing

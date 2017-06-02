@@ -46,7 +46,7 @@ int main() {
 
     //Kingsley added: for testing read_data function=====================================
     /*for (int i = 0; i < n; i++) {
-        for (int j = 0; j < d; j++) {
+        for (int j = 0; j <= d; j++) {
             std::cout << data[i][j] << " ";
         }
         std::cout << std::endl;
