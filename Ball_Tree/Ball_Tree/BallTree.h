@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <queue>
 using namespace std;//for testing
 #define N0 3
 
@@ -31,12 +32,16 @@ public:
 
 class BallTree {
 public:
+	int dataFileIndex = 0;
     Node* root;
+	queue<Node> qu;
 
     BallTree() {
         root = nullptr;
     }
     ~BallTree() {}
+
+	string storeData(float ** data, int firstDimension, int secondDimension);
 
 	bool buildTree(
 		int n,

@@ -3,8 +3,22 @@
 #include <stdlib.h>
 #include <time.h>
 #include <cmath>
+#include<string>
+#include<queue>
+#include<fstream>
 #include <iostream> // for testing
+#include<sstream>
 using namespace std; // for testing
+string intToString(int num) {
+	stringstream ss;
+	ss << num;
+	return ss.str();
+}
+string floatToString(float num) {
+	stringstream ss;
+	ss << num;
+	return ss.str();
+}
 bool BallTree::buildTree(int n, int d, float** data) {
     buildSubTree(root, 1, n, d, data);
     return true;
@@ -114,3 +128,65 @@ float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
     //cout << sqrt(totalDistanceSquare) << endl;//for testing
     return sqrt(totalDistanceSquare);
 }
+
+//data为数据集，n为数据集的大小
+//string BallTree::storeData(float ** data, int firstDimension, int secondDimension) {
+//	string result = floatToString(data[0][0]);
+//	string fileName = intToString(this->dataFileIndex);
+//	ofstream file((fileName + ".txt"), ios::binary|ios::app|ios::out);
+//	file.seekp(0, ios::end);
+//	streampos ps = file.tellp();
+//	//获取当前的文件字节数
+//	int size = (int)ps;
+//	if (ps > 1024 * 64) {
+//		file.close();
+//		++dataFileIndex;
+//		fileName = intToString(this->dataFileIndex);
+//		file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
+//	}
+//	result += " " + intToString(this->dataFileIndex);
+//	for (int i = 0; i < firstDimension; i++) {
+//		string str;
+//		for (int j = 0; j < secondDimension; j++) {
+//			str += (floatToString(data[i][j]) + " ");
+//			file.write(str.c_str(), sizeof(char)*(str.size()));
+//			streampos ps = file.tellp();
+//			if (ps > 1024 * 64) {
+//				file.close();
+//				++dataFileIndex;
+//				fileName = intToString(this->dataFileIndex);
+//				file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
+//			}
+//		}
+//		str += "\n";
+//	}
+//	file.close();
+//	return result;
+//}
+//
+//bool BallTree::storeTree(const char* index_path) {
+//	string indexFilePath(index_path);
+//	//ofstream file(indexFilePath, ios::binary);
+//	ofstream file("index.txt", ios::binary);
+//	if (!file.is_open()) {
+//		cout << "cannot open the file\n";
+//		return false;
+//	}
+//	//queue<Node> qu;
+//	qu.push((*(this->root)));
+//	while (!qu.empty()) {
+//		string st;
+//		//写入二进制文件
+//		string content = intToString(qu.front().index) + " " + intToString(qu.front().dataCount) + " " + intToString(qu.front().dimension) + " (" + floatToString(qu.front().center[0]) + "," + floatToString(qu.front().center[1]) + ") " + floatToString(qu.front().radius) + " ";
+//		if (qu.front().dataCount <= 20) {
+//			st = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+//		}
+//		content += st;
+//		content += "\n";
+//		qu.push(*(qu.front().left));
+//		qu.push(*(qu.front().right));
+//		qu.pop();
+//	}
+//	file.close();
+//	return true;
+//}
