@@ -41,7 +41,7 @@ public:
     }
     ~BallTree() {}
 
-	string storeData(float ** data, int firstDimension, int secondDimension);
+	int storeData(float ** data, int firstDimension, int secondDimension);
 
 	bool buildTree(
 		int n,
