@@ -96,7 +96,7 @@ int BallTree::CloserTo(float* &selectedData, float* &A, float* &B, int d) {
 
 float* BallTree::FindCenter(float** &data, int n, int d) {
     float* center = new float[d];           //圆心向量
-    for (int j = 1; j <= d; j++) {           //向量的每个维度
+    for (int j = 0; j < d; j++) {           //向量的每个维度
         float sumOfOneDimension = 0;        //一个维度的和
         for (int i = 0; i < n; i++) {       //每个向量
             sumOfOneDimension += data[i][j];

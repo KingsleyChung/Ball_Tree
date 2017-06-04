@@ -63,6 +63,8 @@ public:
             }
             return;
         }
+        printf("center:");
+        printVector(subroot->center, d);
         printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
         preorderTesting(subroot->left, d);
         preorderTesting(subroot->right, d);
