@@ -226,3 +226,26 @@ bool BallTree::storeTree(const char* index_path) {
 	file.close();
 	return true;
 }
+int BallTree::mipSearch(int d, float* query) {
+
+}
+
+bool BallTree::insertData(int d, float* data) {
+	//中心点的选取
+}
+
+bool BallTree::deleteData(int d, float* data) {
+	if (DistanceBetween(root->center, data, d) >= root->radius)
+		return false;
+	Node * current_root = root;
+	//找到数据之后再每个节点datacount--;
+	while (current_root->dataCount > N0) {
+		if (current_root->left != nullptr && DistanceBetween(current_root->left->center, data, d) <= current_root->left->radius)
+			current_root = current_root->left;
+		else if (current_root->right != nullptr && DistanceBetween(current_root->right->center, data, d) <= current_root->right->radius)
+			current_root = current_root->right;
+		else
+			return false;
+	}
+		
+}
