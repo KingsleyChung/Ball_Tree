@@ -128,8 +128,8 @@ float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
     //cout << sqrt(totalDistanceSquare) << endl;//for testing
     return sqrt(totalDistanceSquare);
 }
+//storeData返回的是槽号, 参数一：data数组，参数二：数组中有多少列，参数三：列中有多少个属性
 int BallTree::storeData(float ** data, int firstDimension, int secondDimension) {
-	int haha;
 	string result = floatToString(data[0][0]);
 	string fileName = intToString(this->dataFileIndex);
 	ofstream file((fileName + ".txt"), ios::binary | ios::app | ios::out);
@@ -146,25 +146,25 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		fileName = intToString(this->dataFileIndex);
 		file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
 	}
+	int slot_num = (size / 4) / N0;
+	++slot_num;
 	result += " " + intToString(this->dataFileIndex);
-	haha = this->dataFileIndex;
-	for (int i = 0; i < firstDimension; i++) {
-		string str;
-		for (int j = 0; j < secondDimension; j++) {
-			float num = data[i][j];
-			file.write((char*)&(num), sizeof(float));
+	for (int i = 0; i < N0; i++) {
+		if (i < firstDimension) {
+			for (int j = 0; j < secondDimension; j++) {
+				float num = data[i][j];
+				file.write((char*)&(num), sizeof(float));
+			}
 		}
-		streampos ps = file.tellp();
-		size = (int)ps;
-		if (size > 1024 * 64) {
-			file.close();
-			++dataFileIndex;
-			fileName = intToString(this->dataFileIndex);
-			file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
+		else {
+			for (int j = 0; j < secondDimension; j++) {
+				float num = 0;
+				file.write((char*)&(num), sizeof(float));
+			}
 		}
 	}
 	file.close();
-	return haha;
+	return slot_num;
 }
 
 bool BallTree::storeTree(const char* index_path) {
@@ -187,14 +187,20 @@ bool BallTree::storeTree(const char* index_path) {
 			index = qu.front().index;
 			dataCount = qu.front().dataCount;
 			dimension = qu.front().dimension;
-			center1 = 0;
-			center2 = 0;
+			int * arr = new int[qu.front().dimension];
+			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = 0;
+			}
+			//center1 = 0;
+			//center2 = 0;
 			radius = 0;
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
 			file.write((char*)&dimension, sizeof(int));
-			file.write((char*)&center1, sizeof(float));
-			file.write((char*)&center2, sizeof(float));
+			//file.write((char*)&center1, sizeof(float));
+			for (int i = 0; i < qu.front().dimension; i++) {
+				file.write((char*)&arr[i], sizeof(float));
+			}
 			file.write((char*)&radius, sizeof(float));
 			st = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 			int dataFirstIndex = qu.front().data[0][0];
@@ -212,10 +218,15 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&dataCount, sizeof(int));
 			dimension = qu.front().dimension;
 			file.write((char*)&dimension, sizeof(int));
-			center1 = qu.front().center[0];
-			file.write((char*)&center1, sizeof(float));
-			center2 = qu.front().center[1];
-			file.write((char*)&center2, sizeof(float));
+			//center1 = qu.front().center[0];
+			//file.write((char*)&center1, sizeof(float));
+			//center2 = qu.front().center[1];
+			//file.write((char*)&center2, sizeof(float));
+			float * arr = new float[qu.front().dimension];
+			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = qu.front().center[i];
+				file.write((char*)&arr[i], sizeof(float));
+			}
 			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
 			qu.push(*(qu.front().left));
