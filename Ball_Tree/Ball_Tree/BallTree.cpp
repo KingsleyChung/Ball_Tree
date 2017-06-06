@@ -138,8 +138,9 @@ float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
     return sqrt(totalDistanceSquare);
 }
 
+//storeData返回的是槽号, 参数一：data数组，参数二：数组中有多少列，参数三：列中有多少个属性
+
 int BallTree::storeData(float ** data, int firstDimension, int secondDimension) {
-	int haha;
 	string result = floatToString(data[0][0]);
 	string fileName = intToString(this->dataFileIndex);
 	ofstream file((fileName + ".txt"), ios::binary | ios::app | ios::out);
@@ -156,25 +157,25 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		fileName = intToString(this->dataFileIndex);
 		file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
 	}
+	int slot_num = (size / 4) / N0;
+	++slot_num;
 	result += " " + intToString(this->dataFileIndex);
-	haha = this->dataFileIndex;
-	for (int i = 0; i < firstDimension; i++) {
-		string str;
-		for (int j = 0; j < secondDimension; j++) {
-			float num = data[i][j];
-			file.write((char*)&(num), sizeof(float));
+	for (int i = 0; i < N0; i++) {
+		if (i < firstDimension) {
+			for (int j = 0; j < secondDimension; j++) {
+				float num = data[i][j];
+				file.write((char*)&(num), sizeof(float));
+			}
 		}
-		streampos ps = file.tellp();
-		size = (int)ps;
-		if (size > 1024 * 64) {
-			file.close();
-			++dataFileIndex;
-			fileName = intToString(this->dataFileIndex);
-			file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
+		else {
+			for (int j = 0; j < secondDimension; j++) {
+				float num = 0;
+				file.write((char*)&(num), sizeof(float));
+			}
 		}
 	}
 	file.close();
-	return haha;
+	return slot_num;
 }
 
 bool BallTree::storeTree(const char* index_path) {
@@ -197,14 +198,20 @@ bool BallTree::storeTree(const char* index_path) {
 			index = qu.front().index;
 			dataCount = qu.front().dataCount;
 			dimension = qu.front().dimension;
-			center1 = 0;
-			center2 = 0;
+			int * arr = new int[qu.front().dimension];
+			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = 0;
+			}
+			//center1 = 0;
+			//center2 = 0;
 			radius = 0;
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
 			file.write((char*)&dimension, sizeof(int));
-			file.write((char*)&center1, sizeof(float));
-			file.write((char*)&center2, sizeof(float));
+			//file.write((char*)&center1, sizeof(float));
+			for (int i = 0; i < qu.front().dimension; i++) {
+				file.write((char*)&arr[i], sizeof(float));
+			}
 			file.write((char*)&radius, sizeof(float));
 			st = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 			int dataFirstIndex = qu.front().data[0][0];
@@ -222,10 +229,15 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&dataCount, sizeof(int));
 			dimension = qu.front().dimension;
 			file.write((char*)&dimension, sizeof(int));
-			center1 = qu.front().center[0];
-			file.write((char*)&center1, sizeof(float));
-			center2 = qu.front().center[1];
-			file.write((char*)&center2, sizeof(float));
+			//center1 = qu.front().center[0];
+			//file.write((char*)&center1, sizeof(float));
+			//center2 = qu.front().center[1];
+			//file.write((char*)&center2, sizeof(float));
+			float * arr = new float[qu.front().dimension];
+			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = qu.front().center[i];
+				file.write((char*)&arr[i], sizeof(float));
+			}
 			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
 			qu.push(*(qu.front().left));
@@ -236,6 +248,7 @@ bool BallTree::storeTree(const char* index_path) {
 	file.close();
 	return true;
 }
+
 /*
 int mipSearch(int d, float* query) {
 	IndexTree* root = indexTree->getroot();
@@ -270,3 +283,27 @@ int DFS(int d, IndexTree* p, float* query) {
 		DFS(d, p->right, query);
 }
 */
+
+int BallTree::mipSearch(int d, float* query) {
+
+}
+
+bool BallTree::insertData(int d, float* data) {
+	//中心点的选取
+}
+
+bool BallTree::deleteData(int d, float* data) {
+	if (DistanceBetween(root->center, data, d) >= root->radius)
+		return false;
+	Node * current_root = root;
+	//找到数据之后再每个节点datacount--;
+	while (current_root->dataCount > N0) {
+		if (current_root->left != nullptr && DistanceBetween(current_root->left->center, data, d) <= current_root->left->radius)
+			current_root = current_root->left;
+		else if (current_root->right != nullptr && DistanceBetween(current_root->right->center, data, d) <= current_root->right->radius)
+			current_root = current_root->right;
+		else
+			return false;
+	}
+		
+}
