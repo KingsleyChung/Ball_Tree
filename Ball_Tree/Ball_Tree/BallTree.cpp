@@ -164,7 +164,8 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		if (i < firstDimension) {
 			for (int j = 0; j < secondDimension; j++) {
 				float num = data[i][j];
-				cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
+				//测试数据是否输出正确
+				//cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
 				file.write((char*)&(num), sizeof(float));
 			}
 		}
@@ -193,7 +194,7 @@ bool BallTree::storeTree(const char* index_path) {
 	while (!qu.empty()) {
 		string st;
 		string content;
-		if (qu.front().dataCount < 3) {
+		if (qu.front().dataCount < N0) {
 			int index, dataCount, dimension;
 			float center1, center2, radius;
 			index = qu.front().index;
@@ -211,9 +212,11 @@ bool BallTree::storeTree(const char* index_path) {
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			file.write((char*)&radius, sizeof(float));
-			int page_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			int page_index = this->dataFileIndex;
 			file.write((char*)&page_index, sizeof(int));
 			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&slot_index, sizeof(int));
+			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 		}
 		else {
 			int index, dataCount, dimension;
@@ -234,6 +237,7 @@ bool BallTree::storeTree(const char* index_path) {
 			int page_index = 0, slot_index = 0;
 			file.write((char*)&page_index, sizeof(int));
 			file.write((char*)&slot_index, sizeof(int));
+			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}
