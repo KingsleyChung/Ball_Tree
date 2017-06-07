@@ -6,23 +6,30 @@
 #include<string>
 #include<queue>
 #include<fstream>
+#include<vector>
 #include <iostream> // for testing
 #include<sstream>
 using namespace std; // for testing
+
+int currentSum = 0;//查询时保存当前的最大内积
+
 string intToString(int num) {
 	stringstream ss;
 	ss << num;
 	return ss.str();
 }
+
 string floatToString(float num) {
 	stringstream ss;
 	ss << num;
 	return ss.str();
 }
+
 bool BallTree::buildTree(int n, int d, float** data) {
     buildSubTree(root, 1, n, d, data);
     return true;
 }
+
 void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &data) {
     //如果数据量小于N0，则节点为叶子节点
     if (n < N0) {
@@ -55,6 +62,7 @@ void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &da
     //分裂树
     MakeBallTreeSplit(A, B, subroot, n, d, data);
 }
+
 void BallTree::MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data) {
     //声明变量
     int dataCountOfLeft = 0, dataCountOfRight = 0;      //记录左右节点数据个数
@@ -81,6 +89,7 @@ void BallTree::MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, in
     //}
     buildSubTree(subroot->right, subroot->index * 2 + 1, dataCountOfRight, d, dataOfRight);
 }
+
 float* BallTree::FindFurthestData(float* &x, float** &data, int n, int d) {
     float furthestDistance = 0;             //记录最远距离的平方
     int furthestDataPos = 0;                //记录最远距离数据在数组中的位置
@@ -128,7 +137,9 @@ float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
     //cout << sqrt(totalDistanceSquare) << endl;//for testing
     return sqrt(totalDistanceSquare);
 }
+
 //storeData返回的是槽号, 参数一：data数组，参数二：数组中有多少列，参数三：列中有多少个属性
+
 int BallTree::storeData(float ** data, int firstDimension, int secondDimension) {
 	string result = floatToString(data[0][0]);
 	string fileName = intToString(this->dataFileIndex);
@@ -202,12 +213,9 @@ bool BallTree::storeTree(const char* index_path) {
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			file.write((char*)&radius, sizeof(float));
-			st = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			int pageid = this->dataFileIndex;
-			file.write((char*)&pageid, sizeof(int));
-			int slotid = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			file.write((char*)&slotid, sizeof(int));
-			content += st;
+			int page_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&page_index, sizeof(int));
+			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 		}
 		else {
 			int index, dataCount, dimension;
@@ -229,9 +237,9 @@ bool BallTree::storeTree(const char* index_path) {
 			}
 			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
-			float num = 0, num2 = 0;
-			file.write((char*)&num, sizeof(float));
-			file.write((char*)&num2, sizeof(float));
+			int page_index = 0, slot_index = 0;
+			file.write((char*)&page_index, sizeof(int));
+			file.write((char*)&slot_index, sizeof(int));
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}
@@ -240,6 +248,7 @@ bool BallTree::storeTree(const char* index_path) {
 	file.close();
 	return true;
 }
+
 
 int *BallTree::readData(int pageNumer, int slot,int d) {
 	float bufferPage[16384];
@@ -283,6 +292,41 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 	infile.close();
 	return true;
 }
+
+/*
+int mipSearch(int d, float* query) {
+	IndexTree* root = indexTree->getroot();
+	DFS(d, root, query);
+}
+
+int DFS(int d, IndexTree* p, float* query) {
+	if (p == NULL) return;
+	if (p->getDataCount() <= 20) {
+		//get 20 data 
+		int pid = p->getPid();//页号
+		int sid = p->getSid();//槽号
+		if (currentSum > 0) {
+			int sum = 0;
+			float radius = p->getRadius();
+			float* center = p->getCenter();
+			for (int i = 0; i < d; i++) {
+				sum += radius * center[i];
+			}
+			if (sum <= currentSum) return;
+		}
+		vector<Data> vec = getData(pid, sid);
+		for (int i = 0; i < vec.size(); i++) {
+			for (int j = 0; j < d; j++) {
+				
+			}
+		}
+	}
+	if (p->left != NULL)
+		DFS(d, p->left, query);
+	if (p->right != NULL)
+		DFS(d, p->right, query);
+}
+*/
 
 int BallTree::mipSearch(int d, float* query) {
 
