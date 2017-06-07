@@ -162,7 +162,9 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 	streampos ps = file.tellp();
 	//获取当前的文件字节数
 	int size = (int)ps;
-	if (size > 1024 * 64) {
+    cout << "-----------------------------------size:" << size << endl;
+	if (size + N0 * secondDimension  * 4 >= 65536) {
+        cout << "-----------------------------------size:" << size << endl;
 		file.close();
 		++dataFileIndex;
 		fileName = intToString(this->dataFileIndex);
@@ -171,6 +173,7 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 	//重新获取当前的字节数
 	ps = file.tellp();
 	size = (int)ps;
+    float testNum = 1.0 * (size / 4) / N0 / (secondDimension);
 	//获取当前的上一个槽号
 	int slot_num = (size / 4) / N0 / (secondDimension);
 	++slot_num;
@@ -179,7 +182,7 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 			for (int j = 0; j < secondDimension; j++) {
 				float num = data[i][j];
 				//测试数据是否输出正确
-				//cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
+				cout << "-------------page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num <<  " testNum: " << testNum << endl;
 				file.write((char*)&(num), sizeof(float));
 			}
 		}
@@ -297,9 +300,9 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
     }
 	//根据槽号找到数据
 	int len = N0 * (d + 1);
-	int *arr = new int[len - 1];
-	for (int i = 0; i <= len - 1; i++)
-		arr[i] = bufferPage[(slot- 1)*len + i];
+	int *arr = new int[len];
+	for (int i = 0; i < len; i++)
+		arr[i] = bufferPage[(slot-1)*len + i];
 	file.close();
 	return arr;
 }
@@ -341,7 +344,7 @@ void BallTree::DFS(int d, Node* p, float* query) {
 			int count = 0;
 			for (int i = 0; i < N0; i++) {
 				float sum = 0;
-				for (int j = 0; j < d + 1; j++) {
+				for (int j = 0; j <= d; j++) {
 					arr[i][j] = data[count++];
 					//cout << "id: " << arr[i][0] << endl;
 					//cout << arr[i][j] << " ";
