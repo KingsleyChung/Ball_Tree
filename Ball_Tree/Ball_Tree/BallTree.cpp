@@ -216,6 +216,7 @@ bool BallTree::storeTree(const char* index_path) {
 			int page_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 			file.write((char*)&page_index, sizeof(int));
 			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&slot_index, sizeof(int));
 		}
 		else {
 			int index, dataCount, dimension;
@@ -271,23 +272,6 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	return arr;
 }
 
-bool BallTree::restoreTree(const char* index_path, int d) {
-	string indexFilePath(index_path);
-	//ofstream file(indexFilePath, ios::binary);
-	ifstream infile("index.txt", ios::binary);
-	if (!infile.is_open()) {
-		cout << "cannot open the file\n";
-		return false;
-	}
-	infile.seekg(0, ios::end);
-	//queue<Node> qu;
-	qu.push((*(this->root)));
-	int pageNumer = this->dataFileIndex;
-	int slot = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-	data = readData(pageNumer, slot, d);
-	infile.close();
-	return true;
-}
 
 /*
 int mipSearch(int d, float* query) {
