@@ -34,7 +34,20 @@ bool BallTree::buildTree(int n, int d, float** data) {
 void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &data) {
     //如果数据量小于N0，则节点为叶子节点
     if (n < N0) {
-        subroot = new Node(index, n, d, nullptr, 0);
+        float* center;
+        float radius;
+        if (n == 1) {
+            center = data[0];
+            radius = 0;
+        }
+        else {
+            center = FindCenter(data, n, d);
+            float* furthestDataFromCenter = FindFurthestData(center, data, n, d);
+            //printVector(center, d);
+            //printVector(furthestDataFromCenter, d);
+            radius = DistanceBetween(center, furthestDataFromCenter, d);
+        }
+        subroot = new Node(index, n, d, center, radius);
         //复制数据
         subroot->data = new float*[n];
         for (int i = 0; i < n; i++) {
