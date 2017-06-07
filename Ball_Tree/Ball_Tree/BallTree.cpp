@@ -164,6 +164,7 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		if (i < firstDimension) {
 			for (int j = 0; j < secondDimension; j++) {
 				float num = data[i][j];
+				cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
 				file.write((char*)&(num), sizeof(float));
 			}
 		}
@@ -263,7 +264,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	}
 	//根据页号找到txt文件
 	for (int i = 0; i <= 16384; i++) {
-	file.read((char*)&bufferPage[i],sizeof bufferPage[i])
+		file.read((char*)&bufferPage[i], sizeof bufferPage[i]);
     }
 	//读入所有的页面
 	int len = N0*(d + 1);
@@ -283,12 +284,12 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		cout << "cannot open the file\n";
 		return false;
 	}
-	infile.(0, ios::end);
+	infile.seekg(0, ios::end);
 	//queue<Node> qu;
 	qu.push((*(this->root)));
 	int pageNumer = this->dataFileIndex;
 	int slot = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-	data[] = readData(pageNumer, slot, d);
+	data = readData(pageNumer, slot, d);
 	infile.close();
 	return true;
 }
