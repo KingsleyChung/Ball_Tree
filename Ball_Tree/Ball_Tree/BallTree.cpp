@@ -356,7 +356,7 @@ void BallTree::DFS(int d, Node* p, float* query) {
 				delete[] arr[k];
 			}
 		}
-		else cout << "skip" << endl;
+		else cout << "skip - index: " << p->index << endl;
 	}
 	if (p->left != NULL)
 		DFS(d, p->left, query);
