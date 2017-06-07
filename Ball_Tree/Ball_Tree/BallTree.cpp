@@ -51,7 +51,7 @@ void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &da
         //复制数据
         subroot->data = new float*[n];
         for (int i = 0; i < n; i++) {
-            subroot->data[i] = new float[d];
+            subroot->data[i] = new float[d+1];
             for (int j = 0; j <= d; j++) {
                 subroot->data[i][j] = data[i][j];
             }
@@ -214,7 +214,7 @@ bool BallTree::storeTree(const char* index_path) {
 			index = qu.front().index;
 			dataCount = qu.front().dataCount;
 			dimension = qu.front().dimension;
-			int * arr = new int[qu.front().dimension];
+			int * arr = new int[qu.front().dimension + 1];
 			radius = qu.front().radius;
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
@@ -240,7 +240,7 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&dataCount, sizeof(int));
 			dimension = qu.front().dimension;
 			file.write((char*)&dimension, sizeof(int));
-			float * arr = new float[qu.front().dimension];
+			float * arr = new float[qu.front().dimension + 1];
 			for (int i = 1; i <= qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
 				cout << "圆心: " << arr[i] << endl;
@@ -290,7 +290,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 		return false;
 	}
 	//读入当前的页面
-	for (int i = 0; i <= 16384; i++) {
+	for (int i = 0; i < 16384; i++) {
 		file.read((char*)&bufferPage[i], sizeof bufferPage[i]);
     }
 	//根据槽号找到数据
@@ -391,7 +391,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 	Node * currentNode;
 	while (!ifile.eof()) {
 		int index, datacount, dimension, pageNumber;
-		float * center = new float[d];
+		float * center = new float[d + 1];
 		float radius;
 		int slotNumer;
 		ifile.read((char*)&index, sizeof(int));

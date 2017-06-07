@@ -3,7 +3,7 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define FLAT
+#define MNIST
 
 #ifdef FLAT
 char dataset[L] = "Flat";

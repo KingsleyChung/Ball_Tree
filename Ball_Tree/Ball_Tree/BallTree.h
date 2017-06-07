@@ -5,7 +5,7 @@
 #include <iostream>
 #include <queue>
 using namespace std;//for testing
-#define N0 3
+#define N0 20
 
 class Node{
 public:
