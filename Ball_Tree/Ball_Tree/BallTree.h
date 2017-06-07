@@ -5,7 +5,7 @@
 #include <iostream>
 #include <queue>
 using namespace std;//for testing
-#define N0 20
+#define N0 3
 
 class Node{
 public:
@@ -79,9 +79,6 @@ public:
         }
 		if (subroot->dataCount < N0) {
 			printVector(subroot->center, d);
-			for (int i = 0; i < subroot->dataCount; i++) {
-				printVector(subroot->data[i], d);
-			}
 			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
 			return;
 		}
@@ -96,15 +93,22 @@ public:
         preorderTesting(subroot->right, d);
     }
 
-    void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
-        cout << "[" << data[0] << "]";
-        cout << "(";
-        for (int i = 1; i < d; i++) {
-            cout << data[i] << ", ";
-        }
-        cout << data[d] << ")\n";
-    }
-
+    //void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
+    //    cout << "[" << data[0] << "]";
+    //    cout << "(";
+    //    for (int i = 1; i < d; i++) {
+    //        cout << data[i] << ", ";
+    //    }
+    //    cout << data[d] << ")\n";
+    //}
+	void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
+		//cout << "[" << data[0] << "]";
+		cout << "(";
+		for (int i = 0; i < d; i++) {
+			cout << data[i] << ", ";
+		}
+		cout  << ")\n";
+	}
 	bool storeTree(
 		const char* index_path);
 

@@ -3,7 +3,7 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define MNIST
+#define FLAT
 
 #ifdef FLAT
 char dataset[L] = "Flat";
@@ -55,8 +55,8 @@ int main() {
     //for testing build tree and display result
     BallTree ball_tree1;
     ball_tree1.buildTree(n, d, data);
-	ball_tree1.storeTree("");
-    ball_tree1.preorderPrint(d);
+	//ball_tree1.storeTree("");
+   // ball_tree1.preorderPrint(d);
 	ball_tree1.storeTree(index_path);
 
 	//测试读取数据项是否正确
@@ -78,7 +78,7 @@ int main() {
 	
 	BallTree ball_tree2;
 	ball_tree2.restoreTree(index_path, d);
-	ball_tree2.preorderPrint(d);
+	//ball_tree2.preorderPrint(d);
 	//ball_tree1.preorderPrint(d);
 
 
