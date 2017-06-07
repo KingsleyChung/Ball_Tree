@@ -314,48 +314,49 @@ void BallTree::DFS(int d, Node* p, float* query) {
 	//if (p->right == NULL) cout << "0 ";
 	//cout << endl;
 
-	cout << "index: " << p->index << endl;
+	//cout << "index: " << p->index << endl;
 	if (p->dataCount <= N0 && p->dataCount > 0) {
 		//get 20 data 
 		int pid = p->pageNumer;//Ò³ºÅ
 		int sid = p->slot;//²ÛºÅ
 		float radius = p->radius;
 		float* center = p->center;
-		if (currentSum > 0) {
-			float tmp = 0, q = 0;
-			for (int i = 0; i < d; i++) {
-				tmp += query[i] * center[i];
-				q += query[i] * query[i];
+		float tmp = 0, q = 0;
+		for (int i = 0; i < d; i++) {
+			tmp += query[i] * center[i];
+			q += query[i] * query[i];
+		}
+		q = sqrt(q);
+		tmp = tmp + q * radius;
+		if (tmp > currentSum) {
+			cout << "index: " << p->index << endl;
+			int* data = readData(pid, sid, d);
+			int** arr;
+			arr = new int*[N0];
+			for (int n = 0; n < N0; n++) {
+				arr[n] = new int[d + 1];
 			}
-			q = sqrt(q);
-			tmp = tmp + q * radius;
-			if (tmp <= currentSum) return;
-		}
-		int* data = readData(pid, sid, d);
-		int** arr;
-		arr = new int*[N0];
-		for (int n = 0; n < N0; n++) {
-			arr[n] = new int[d + 1];
-		}
-		int count = 0;
-		for (int i = 0; i < N0; i++) {
-			float sum = 0;
-			for (int j = 0; j < d + 1; j++) {
-				arr[i][j] = data[count++];
-				//cout << "id: " << arr[i][0] << endl;
-				cout << arr[i][j] << " ";
-				if (j != 0) {
-					sum += arr[i][j] * query[j - 1];
+			int count = 0;
+			for (int i = 0; i < N0; i++) {
+				float sum = 0;
+				for (int j = 0; j < d + 1; j++) {
+					arr[i][j] = data[count++];
+					//cout << "id: " << arr[i][0] << endl;
+					//cout << arr[i][j] << " ";
+					if (j != 0) {
+						sum += arr[i][j] * query[j - 1];
+					}
+				}
+				if (sum > currentSum) {
+					currentSum = sum;
+					currentIndex = arr[i][0];
 				}
 			}
-			if (sum > currentSum) {
-				currentSum = sum;
-				currentIndex = arr[i][0];
+			for (int k = 0; k < N0; k++) {
+				delete[] arr[k];
 			}
 		}
-		for (int k = 0; k < N0; k++) {
-			delete[] arr[k];
-		}
+		else cout << "skip" << endl;
 	}
 	if (p->left != NULL)
 		DFS(d, p->left, query);

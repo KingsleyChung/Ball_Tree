@@ -82,8 +82,8 @@ int main() {
 	//ball_tree1.preorderPrint(d);
 
 
-	//float* f = new float[2]{ 1,1 };
-	//cout << "query: " << ball_tree2.mipSearch(d, f) << endl;
+	float* f = new float[2]{ 1,1 };
+	cout << "query: " << ball_tree2.mipSearch(d, f) << endl;
 
 	system("pause");
     //===================================================================================
