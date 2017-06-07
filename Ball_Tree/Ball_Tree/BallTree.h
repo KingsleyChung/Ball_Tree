@@ -83,6 +83,7 @@ public:
         preorderTesting(subroot->left, d);
         preorderTesting(subroot->right, d);
     }
+
     void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
         cout << "[" << data[0] << "]";
         cout << "(";
@@ -122,6 +123,7 @@ public:
 	//void readPage(int PageNumber);
 	Node *  findPoint(int index);
 
+	void DFS(int d, Node* p, float* query);
 };
 
 #endif

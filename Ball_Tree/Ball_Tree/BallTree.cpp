@@ -11,7 +11,8 @@
 #include<sstream>
 using namespace std; // for testing
 
-int currentSum = 0;//查询时保存当前的最大内积
+float currentSum = 0;//查询时保存当前的最大内积
+int currentIndex = -1;//记录当前数据项id
 
 string intToString(int num) {
 	stringstream ss;
@@ -286,55 +287,64 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 }
 
 
-//int mipSearch(int d, float* query) {
-//	IndexTree* root = indexTree->getroot();
-//	DFS(d, root, query);
-//}
-//
-//int DFS(int d, IndexTree* p, float* query) {
-//	if (p == NULL) return;
-//	if (p->getDataCount() <= 20) {
-//		//get 20 data 
-//		int pid = p->getPid();//页号
-//		int sid = p->getCid();//槽号
-//		if (currentSum > 0) {
-//			int sum = 0;
-//			float radius = p->getRadius();
-//			float* center = p->getCenter();
-//			for (int i = 0; i < d; i++) {
-//				sum += radius * center[i];
-//			}
-//			if (sum <= currentSum) return;
-//		}
-//		int* a = ball_tree1.readData(pid, sid, d);
-//		int **arr;
-//		arr = new int*[N0];
-//		for (int n = 0; n < N0; n++) {
-//			arr[n] = new int[d + 1];
-//		}
-//		int count = 0;
-//		for (int i = 0; i < N0; i++) {
-//			for (int j = 0; j < d + 1; j++) {
-//				arr[i][j] = a[count++];
-//				cout << arr[i][j] << " ";
-//			}
-//			cout << endl;
-//		}
-//		for (int i = 0; i < vec.size(); i++) {
-//			for (int j = 0; j < d; j++) {
-//				
-//			}
-//		}
-//	}
-//	if (p->left != NULL)
-//		DFS(d, p->left, query);
-//	if (p->right != NULL)
-//		DFS(d, p->right, query);
-//}
-
-
 int BallTree::mipSearch(int d, float* query) {
-	return 0;
+	if (root->left == NULL) cout << "0";
+	if (root->right == NULL) cout << "0";
+	DFS(d, root, query);
+	return currentIndex;
+}
+
+void BallTree::DFS(int d, Node* p, float* query) {
+	if (p == NULL) return;
+	cout << "index: " << p->index << endl;
+	if (p->dataCount <= N0) {
+		//get 20 data 
+		int pid = p->pageNumer;//页号
+		int sid = p->slot;//槽号
+		float radius = p->radius;
+		float* center = p->center;
+		if (currentSum > 0) {
+			float tmp = 0, q = 0;
+			for (int i = 0; i < d; i++) {
+				tmp += query[i] * center[i];
+				q += query[i] * query[i];
+			}
+			q = sqrt(q);
+			tmp = tmp + q * radius;
+			if (tmp <= currentSum) return;
+		}
+		int* data = readData(pid, sid, d);
+		int** arr;
+		arr = new int*[N0];
+		for (int n = 0; n < N0; n++) {
+			arr[n] = new int[d + 1];
+		}
+		int count = 0;
+		for (int i = 0; i < N0; i++) {
+			float sum = 0, p = 0;
+			for (int j = 0; j < d + 1; j++) {
+				arr[i][j] = data[count++];
+				//cout << arr[i][j] << " ";
+				if (j != 0) {
+					sum += arr[i][j] * query[j - 1];
+					p += query[j - 1] * query[j - 1];
+				}
+			}
+			p = sqrt(p);
+			sum = sum + p * radius;
+			if (sum > currentSum) {
+				currentSum = sum;
+				currentIndex = arr[i][0];
+			}
+		}
+		for (int k = 0; k < N0; k++) {
+			delete[] arr[k];
+		}
+	}
+	if (p->left != NULL)
+		DFS(d, p->left, query);
+	if (p->right != NULL)
+		DFS(d, p->right, query);
 }
 
 bool BallTree::insertData(int d, float* data) {
@@ -361,7 +371,7 @@ bool BallTree::deleteData(int d, float* data) {
 bool BallTree::restoreTree(const char* index_path, int d) {
 	//cout << index_path << endl;
 	ifstream ifile("index.txt", ios::binary);
-	Node * currentNode = root;
+	Node * currentNode;
 	while (!ifile.eof()) {
 		int index, datacount, dimension, pageNumber;
 		float * center = new float[d];
