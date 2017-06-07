@@ -70,24 +70,35 @@ public:
             return;
         }
         if (subroot->data != nullptr) {
-            printf("index:%d dataCount:%d\n", subroot->index, subroot->dataCount);
-            for (int i = 0; i < subroot->dataCount; i++) {
-                printVector(subroot->data[i], d);
-            }
-            return;
+            //printf("index:%d dataCount:%d\n", subroot->index, subroot->dataCount);
+            //for (int i = 0; i < subroot->dataCount; i++) {
+            //    printVector(subroot->data[i], d);
+            //}
+			//printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
+            //return;
         }
-        printf("center:");
-        printVector(subroot->center, d);
+		if (subroot->dataCount < N0) {
+			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
+			return;
+		}
+
+        //printf("center:");
+			
+        //printVector(subroot->center, d);
+		float a = subroot->radius;
         printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
-        preorderTesting(subroot->left, d);
+		//printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
+		preorderTesting(subroot->left, d);
         preorderTesting(subroot->right, d);
     }
+
     void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
+        cout << "[" << data[0] << "]";
         cout << "(";
-        for (int i = 0; i < d - 1; i++) {
+        for (int i = 1; i < d; i++) {
             cout << data[i] << ", ";
         }
-        cout << data[d - 1] << ")\n";
+        cout << data[d] << ")\n";
     }
 
 	bool storeTree(
@@ -120,6 +131,7 @@ public:
 	//void readPage(int PageNumber);
 	Node *  findPoint(int index);
 
+	void DFS(int d, Node* p, float* query);
 };
 
 #endif
