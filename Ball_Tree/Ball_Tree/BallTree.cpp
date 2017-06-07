@@ -249,19 +249,19 @@ bool BallTree::storeTree(const char* index_path) {
 
 int *BallTree::readData(int pageNumer, int slot,int d) {
 	//string indexFilePath(index_path);
-	//ofstream file(indexFilePath, ios::binary);
-	ifstream infile("index.txt", ios::binary);
-	if (!infile.is_open()) {
-		cout << "cannot open the file\n";
-		return false;
-	}
-	infile.seekg(0, ios::end);
-	//queue<Node> qu;
-	qu.push((*(this->root)));
-	int pageNumer = this->dataFileIndex;
-	int slot = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-	data = readData(pageNumer, slot, d);
-	infile.close();
+	////ofstream file(indexFilePath, ios::binary);
+	//ifstream infile("index.txt", ios::binary);
+	//if (!infile.is_open()) {
+	//	cout << "cannot open the file\n";
+	//	return false;
+	//}
+	//infile.seekg(0, ios::end);
+	////queue<Node> qu;
+	//qu.push((*(this->root)));
+	//int pageNumer = this->dataFileIndex;
+	//int slot = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+	//data = readData(pageNumer, slot, d);
+	//infile.close();
 
 	float bufferPage[16384];
 	//缓冲页
@@ -279,16 +279,12 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
     }
 	//读入所有的页面
 	int len = N0 * (d + 1);
-	int *arr=new int[len - 1];
+	int *arr = new int[len - 1];
 	for (int i = 0; i <= len - 1; i++)
 		arr[i] = bufferPage[(slot- 1)*len + i];
 	//根据槽号找到数据
 	file.close();
 	return arr;
-}
-
-bool BallTree::restoreTree(const char* index_path, int d) {
-	
 }
 
 /*

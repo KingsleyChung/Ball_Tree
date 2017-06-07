@@ -57,6 +57,23 @@ int main() {
     ball_tree1.buildTree(n, d, data);
 	ball_tree1.storeTree("");
     ball_tree1.preorderPrint(d);
+
+	//测试读取数据项是否正确
+	/*int* a = ball_tree1.readData(0, 1, d);
+	int **arr;
+	arr = new int*[N0];
+	for (int n = 0; n < N0; n++) {
+		arr[n] = new int[d+1];
+	}
+	int count = 0;
+	for (int i = 0; i < N0; i++) {
+		for (int j = 0; j < d + 1; j++) {
+			arr[i][j] = a[count++];
+			cout << arr[i][j] << " ";
+		}
+		cout << endl;
+	}*/
+
 	system("pause");
 	//ball_tree1.storeTree(index_path);
 	//BallTree ball_tree2;
