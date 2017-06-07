@@ -74,15 +74,18 @@ public:
             //for (int i = 0; i < subroot->dataCount; i++) {
             //    printVector(subroot->data[i], d);
             //}
-            return;
+			//printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
+            //return;
         }
-		if (subroot->dataCount < N0)
+		if (subroot->dataCount < N0) {
+			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
 			return;
+		}
         printf("center:");
         //printVector(subroot->center, d);
 		float a = subroot->radius;
         printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
-		printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
+		//printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
 		preorderTesting(subroot->left, d);
         preorderTesting(subroot->right, d);
     }

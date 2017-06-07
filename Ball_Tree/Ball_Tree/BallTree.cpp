@@ -165,7 +165,7 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		if (i < firstDimension) {
 			for (int j = 0; j < secondDimension; j++) {
 				float num = data[i][j];
-				cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
+				//cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
 				file.write((char*)&(num), sizeof(float));
 			}
 		}
