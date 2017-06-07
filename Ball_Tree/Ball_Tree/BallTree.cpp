@@ -57,6 +57,8 @@ void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &da
     float* center = FindCenter(data, n, d);
     //printVector(center, d);//for testing
     float* furthestDataFromCenter = FindFurthestData(center, data, n, d);
+    printVector(center, d);
+    printVector(furthestDataFromCenter, d);
     float radius = DistanceBetween(center, furthestDataFromCenter, d);
     subroot = new Node(index, n, d, center, radius);
     //分裂树
@@ -118,14 +120,15 @@ int BallTree::CloserTo(float* &selectedData, float* &A, float* &B, int d) {
 }
 
 float* BallTree::FindCenter(float** &data, int n, int d) {
-    float* center = new float[d];           //圆心向量
-    for (int j = 0; j < d; j++) {           //向量的每个维度
+    float* center = new float[d + 1];           //圆心向量
+    for (int j = 1; j <= d; j++) {          //向量的每个维度
         float sumOfOneDimension = 0;        //一个维度的和
         for (int i = 0; i < n; i++) {       //每个向量
             sumOfOneDimension += data[i][j];
         }
         center[j] = sumOfOneDimension / (n + 0.0);//平均值
     }
+    center[0] = -1;
     return center;
 }
 
@@ -139,7 +142,6 @@ float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
 }
 
 //storeData返回的是槽号, 参数一：data数组，参数二：数组中有多少列，参数三：列中有多少个属性
-
 int BallTree::storeData(float ** data, int firstDimension, int secondDimension) {
 	string fileName = intToString(this->dataFileIndex);
 	ofstream file((fileName + ".txt"), ios::binary | ios::app | ios::out);
@@ -246,7 +248,7 @@ bool BallTree::storeTree(const char* index_path) {
 
 
 int *BallTree::readData(int pageNumer, int slot,int d) {
-	string indexFilePath(index_path);
+	//string indexFilePath(index_path);
 	//ofstream file(indexFilePath, ios::binary);
 	ifstream infile("index.txt", ios::binary);
 	if (!infile.is_open()) {
@@ -324,22 +326,89 @@ int DFS(int d, IndexTree* p, float* query) {
 }
 */
 
-//bool BallTree::insertData(int d, float* data) {
-//	//中心点的选取
-//}
-//
-//bool BallTree::deleteData(int d, float* data) {
-//	if (DistanceBetween(root->center, data, d) >= root->radius)
-//		return false;
-//	Node * current_root = root;
-//	//找到数据之后再每个节点datacount--;
-//	while (current_root->dataCount > N0) {
-//		if (current_root->left != nullptr && DistanceBetween(current_root->left->center, data, d) <= current_root->left->radius)
-//			current_root = current_root->left;
-//		else if (current_root->right != nullptr && DistanceBetween(current_root->right->center, data, d) <= current_root->right->radius)
-//			current_root = current_root->right;
-//		else
-//			return false;
-//	}
-//		
-//}
+int BallTree::mipSearch(int d, float* query) {
+	return 0;
+}
+
+bool BallTree::insertData(int d, float* data) {
+	//中心点的选取
+	return true;
+}
+
+bool BallTree::deleteData(int d, float* data) {
+	if (DistanceBetween(root->center, data, d) >= root->radius)
+		return false;
+	Node * current_root = root;
+	//找到数据之后再每个节点datacount--;
+	while (current_root->dataCount > N0) {
+		if (current_root->left != nullptr && DistanceBetween(current_root->left->center, data, d) <= current_root->left->radius)
+			current_root = current_root->left;
+		else if (current_root->right != nullptr && DistanceBetween(current_root->right->center, data, d) <= current_root->right->radius)
+			current_root = current_root->right;
+		else
+			return false;
+	}
+	return true;
+}
+
+bool BallTree::restoreTree(const char* index_path, int d) {
+	ifstream ifile(index_path, ios::in | ios::binary);
+	Node * currentNode = root;
+	while (!ifile.eof()) {
+		int index, datacount, dimension, pageNumber;
+		float * center = new float[d];
+		float radius;
+		long slotNumer;
+		ifile.read((char*)&index, sizeof(int));
+		ifile.read((char*)&datacount, sizeof(int));
+		ifile.read((char*)&dimension, sizeof(int));
+		ifile.read((char*)center, sizeof(float) * d);
+		ifile.read((char*)&radius, sizeof(float));
+		ifile.read((char*)&pageNumber, sizeof(int));
+		ifile.read((char*)&slotNumer, sizeof(long));
+		currentNode = findPoint(index);
+		currentNode->index = index;
+		currentNode->dataCount = datacount;
+		currentNode->dimension = dimension;
+		currentNode->center = center;
+		currentNode->radius = radius;
+		currentNode->pageNumer = pageNumber;
+		currentNode->slot = slotNumer;
+	}
+	return true;
+}
+
+Node *  BallTree::findPoint(int index) {
+	if (index == 1) {
+		root = new Node();
+		return root;
+	}
+	Node * currentNode = root;
+	int layer = 0;
+	int result = 1;
+	while (result < index) {
+		layer++;
+		result += pow(2, layer);
+	}
+	int j = layer;
+	while (currentNode != nullptr) {
+		if (index - (result - pow(2, layer)) <= pow(2, j) / 2) {
+			currentNode = currentNode->left;
+			j--;
+		}
+		else {
+			currentNode = currentNode->right;
+			index = index - pow(2, j) / 2;
+			j--;
+		}
+		if (2 * currentNode->index == index) {
+			currentNode->left = new Node();
+			return currentNode->left;
+		}
+		else if (2 * currentNode->index + 1 == index) {
+			currentNode->right = new Node();
+			return currentNode->right;
+		}
+	}
+}
+
