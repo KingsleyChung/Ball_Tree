@@ -195,7 +195,7 @@ bool BallTree::storeTree(const char* index_path) {
 	while (!qu.empty()) {
 		string st;
 		string content;
-		if (qu.front().dataCount < 3) {
+		if (qu.front().dataCount < N0) {
 			int index, dataCount, dimension;
 			float center1, center2, radius;
 			index = qu.front().index;
@@ -213,7 +213,7 @@ bool BallTree::storeTree(const char* index_path) {
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			file.write((char*)&radius, sizeof(float));
-			int page_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			int page_index = this->dataFileIndex;
 			file.write((char*)&page_index, sizeof(int));
 			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 			file.write((char*)&slot_index, sizeof(int));
@@ -248,6 +248,21 @@ bool BallTree::storeTree(const char* index_path) {
 
 
 int *BallTree::readData(int pageNumer, int slot,int d) {
+	//string indexFilePath(index_path);
+	//ofstream file(indexFilePath, ios::binary);
+	ifstream infile("index.txt", ios::binary);
+	if (!infile.is_open()) {
+		cout << "cannot open the file\n";
+		return false;
+	}
+	infile.seekg(0, ios::end);
+	//queue<Node> qu;
+	qu.push((*(this->root)));
+	int pageNumer = this->dataFileIndex;
+	int slot = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+	data = readData(pageNumer, slot, d);
+	infile.close();
+
 	float bufferPage[16384];
 	//缓冲页
 	ifstream file;
@@ -263,7 +278,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 		file.read((char*)&bufferPage[i], sizeof bufferPage[i]);
     }
 	//读入所有的页面
-	int len = N0*(d + 1);
+	int len = N0 * (d + 1);
 	int *arr=new int[len - 1];
 	for (int i = 0; i <= len - 1; i++)
 		arr[i] = bufferPage[(slot- 1)*len + i];
@@ -271,7 +286,6 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	file.close();
 	return arr;
 }
-
 
 /*
 int mipSearch(int d, float* query) {
