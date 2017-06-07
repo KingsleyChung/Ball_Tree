@@ -288,14 +288,16 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 
 
 int BallTree::mipSearch(int d, float* query) {
-	if (root->left == NULL) cout << "0";
-	if (root->right == NULL) cout << "0";
 	DFS(d, root, query);
 	return currentIndex;
 }
 
 void BallTree::DFS(int d, Node* p, float* query) {
 	if (p == NULL) return;
+	//if (p->left == NULL) cout << "0 ";
+	//if (p->right == NULL) cout << "0 ";
+	//cout << endl;
+
 	cout << "index: " << p->index << endl;
 	if (p->dataCount <= N0) {
 		//get 20 data 
