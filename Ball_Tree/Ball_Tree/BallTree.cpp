@@ -215,14 +215,12 @@ bool BallTree::storeTree(const char* index_path) {
 			dataCount = qu.front().dataCount;
 			dimension = qu.front().dimension;
 			int * arr = new int[qu.front().dimension];
-			for (int i = 0; i < qu.front().dimension; i++) {
-				arr[i] = 0;
-			}
-			radius = 0;
+			radius = qu.front().radius;
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
 			file.write((char*)&dimension, sizeof(int));
 			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = qu.front().center[i];
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			file.write((char*)&radius, sizeof(float));
