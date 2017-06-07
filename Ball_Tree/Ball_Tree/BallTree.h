@@ -5,7 +5,7 @@
 #include <iostream>
 #include <queue>
 using namespace std;//for testing
-#define N0 3
+#define N0 20
 
 class Node{
 public:
@@ -103,11 +103,11 @@ public:
     //}
 	void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
 		//cout << "[" << data[0] << "]";
-		cout << "(";
+		//cout << "(";
 		for (int i = 0; i < d; i++) {
-			cout << data[i] << ", ";
+			//cout << data[i] << ", ";
 		}
-		cout  << ")\n";
+		//cout  << ")\n";
 	}
 	bool storeTree(
 		const char* index_path);

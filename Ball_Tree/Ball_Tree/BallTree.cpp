@@ -162,9 +162,9 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 	streampos ps = file.tellp();
 	//获取当前的文件字节数
 	int size = (int)ps;
-    cout << "-----------------------------------size:" << size << endl;
+    //cout << "-----------------------------------size:" << size << endl;
 	if (size + N0 * secondDimension  * 4 >= 65536) {
-        cout << "-----------------------------------size:" << size << endl;
+        //cout << "-----------------------------------size:" << size << endl;
 		file.close();
 		++dataFileIndex;
 		fileName = intToString(this->dataFileIndex);
@@ -182,7 +182,7 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 			for (int j = 0; j < secondDimension; j++) {
 				float num = data[i][j];
 				//测试数据是否输出正确
-				cout << "-------------page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num <<  " testNum: " << testNum << endl;
+				//cout << "-------------page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num <<  " testNum: " << testNum << endl;
 				file.write((char*)&(num), sizeof(float));
 			}
 		}
@@ -202,7 +202,7 @@ bool BallTree::storeTree(const char* index_path) {
 	//ofstream file(indexFilePath, ios::binary);
 	ofstream file("index.txt", ios::binary | ios::app | ios::out);
 	if (!file.is_open()) {
-		cout << "cannot open the file\n";
+		//cout << "cannot open the file\n";
 		return false;
 	}
 	file.seekp(0, ios::end);
@@ -215,25 +215,25 @@ bool BallTree::storeTree(const char* index_path) {
 			int index, dataCount, dimension;
 			float center1, center2, radius;
 			index = qu.front().index;
-			dataCount = qu.front().dataCount;
-			dimension = qu.front().dimension;
-			int * arr = new int[qu.front().dimension + 1];
-			radius = qu.front().radius;
 			file.write((char*)&index, sizeof(int));
+			dataCount = qu.front().dataCount;
 			file.write((char*)&dataCount, sizeof(int));
+			dimension = qu.front().dimension;
 			file.write((char*)&dimension, sizeof(int));
+			float * arr = new float[qu.front().dimension + 1];
 			for (int i = 1; i <= qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
-				cout << arr[i] << "," ;
+				//cout << arr[i] << ",";
 				file.write((char*)&arr[i], sizeof(float));
 			}
-			cout << "		 ";
+			//cout << "		";
+			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
 			int page_index = this->dataFileIndex;
 			file.write((char*)&page_index, sizeof(int));
 			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 			file.write((char*)&slot_index, sizeof(int));
-			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 		}
 		else {
 			int index, dataCount, dimension;
@@ -247,16 +247,16 @@ bool BallTree::storeTree(const char* index_path) {
 			float * arr = new float[qu.front().dimension + 1];
 			for (int i = 1; i <= qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
-				cout << arr[i] << ",";
+				//cout << arr[i] << ",";
 				file.write((char*)&arr[i], sizeof(float));
 			}
-			cout << "		";
+			//cout << "		";
 			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
 			int page_index = 0, slot_index = 0;
 			file.write((char*)&page_index, sizeof(int));
 			file.write((char*)&slot_index, sizeof(int));
-			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}
@@ -291,7 +291,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	pagename += ".txt";
 	file.open(pagename, ios::binary);
 	if (!file.is_open()) {
-		cout << "cannot open the file\n";
+		//cout << "cannot open the file\n";
 		return false;
 	}
 	//读入当前的页面
@@ -334,7 +334,7 @@ void BallTree::DFS(int d, Node* p, float* query) {
 		q = sqrt(q);
 		tmp = tmp + q * radius;
 		if (tmp > currentSum) {
-			cout << "index: " << p->index << endl;
+			//cout << "index: " << p->index << endl;
 			int* data = readData(pid, sid, d);
 			int** arr;
 			arr = new int*[N0];
@@ -361,7 +361,10 @@ void BallTree::DFS(int d, Node* p, float* query) {
 				delete[] arr[k];
 			}
 		}
-		else cout << "skip - index: " << p->index << endl;
+		else
+		{
+			//cout << "skip - index: " << p->index << endl;
+		}
 	}
 	if (p->left != NULL)
 		DFS(d, p->left, query);
@@ -415,7 +418,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		}
 		currentNode = findPoint(index);
 		if (currentNode == nullptr) {
-			cout << index << endl;
+			//cout << index << endl;
 			return false;
 		}
 		currentNode->index = index;
