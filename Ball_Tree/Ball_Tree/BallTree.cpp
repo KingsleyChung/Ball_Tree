@@ -214,10 +214,10 @@ bool BallTree::storeTree(const char* index_path) {
 			}
 			file.write((char*)&radius, sizeof(float));
 			st = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			int dataFirstIndex = qu.front().data[0][0];
-			file.write((char*)&dataFirstIndex, sizeof(int));
-			int pageid = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			file.write((char*)&pageid, sizeof(int));
+			int page_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&page_index, sizeof(int));
+			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&slot_index, sizeof(int));
 			content += st;
 		}
 		else {
@@ -240,6 +240,9 @@ bool BallTree::storeTree(const char* index_path) {
 			}
 			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
+			int page_index = 0, slot_index = 0;
+			file.write((char*)&page_index, sizeof(int));
+			file.write((char*)&slot_index, sizeof(int));
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}
