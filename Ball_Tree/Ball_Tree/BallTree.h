@@ -39,6 +39,7 @@ public:
 	int dataFileIndex = 0;
     Node* root;
 	queue<Node> qu;
+	int *data;
 	//float bufferPage[16384];//缓冲页
 	//long flag;//空闲处下标
 
@@ -48,6 +49,7 @@ public:
     ~BallTree() {}
 
 	int storeData(float ** data, int firstDimension, int secondDimension);
+	int *readData(int pageNumer, int slot,int d);
 
 	bool buildTree(
 		int n,
@@ -81,11 +83,12 @@ public:
         preorderTesting(subroot->right, d);
     }
     void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
+        cout << "[" << data[0] << "]";
         cout << "(";
-        for (int i = 0; i < d - 1; i++) {
+        for (int i = 1; i < d; i++) {
             cout << data[i] << ", ";
         }
-        cout << data[d - 1] << ")\n";
+        cout << data[d] << ")\n";
     }
 
 	bool storeTree(
