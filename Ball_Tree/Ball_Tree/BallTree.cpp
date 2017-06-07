@@ -219,8 +219,9 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
 			file.write((char*)&dimension, sizeof(int));
-			for (int i = 0; i < qu.front().dimension; i++) {
+			for (int i = 1; i <= qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
+				cout << "Ô²ÐÄ: " << arr[i] << endl;
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			file.write((char*)&radius, sizeof(float));
@@ -240,8 +241,9 @@ bool BallTree::storeTree(const char* index_path) {
 			dimension = qu.front().dimension;
 			file.write((char*)&dimension, sizeof(int));
 			float * arr = new float[qu.front().dimension];
-			for (int i = 0; i < qu.front().dimension; i++) {
+			for (int i = 1; i <= qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
+				cout << "Ô²ÐÄ: " << arr[i] << endl;
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			radius = qu.front().radius;
