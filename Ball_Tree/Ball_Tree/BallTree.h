@@ -17,10 +17,10 @@ public:
     Node* left;             //左子树
     Node* right;            //右子树
     float** data;           //若是叶子节点，储存数据
-    int page_id;            //页号
-    int slot_id;            //槽号
+	int pageNumer;			//对应数据的页号	
+	int slot;				//对应数据的槽号	
 
-    Node(int _index, int _dataCount, int _dimension, float* _center, float _radius, int _page_id = -1, int _slot_id = -1) {       //构造函数
+    Node(int _index = -1, int _dataCount = -1, int _dimension = -1, float* _center = nullptr, float _radius = 0, int PageNumer = -1, int Slot = -1) {       //构造函数
         index = _index;
         dataCount = _dataCount;
         dimension = _dimension;
@@ -29,8 +29,8 @@ public:
         left = nullptr;
         right = nullptr;
         data = nullptr;
-        page_id = _page_id;
-        slot_id = _slot_id;
+		pageNumer = PageNumer;
+		slot = Slot;
     }
 };
 
@@ -39,6 +39,9 @@ public:
 	int dataFileIndex = 0;
     Node* root;
 	queue<Node> qu;
+	int *data;
+	//float bufferPage[16384];//缓冲页
+	//long flag;//空闲处下标
 
     BallTree() {
         root = nullptr;
@@ -46,6 +49,7 @@ public:
     ~BallTree() {}
 
 	int storeData(float ** data, int firstDimension, int secondDimension);
+	int *readData(int pageNumer, int slot,int d);
 
 	bool buildTree(
 		int n,
@@ -91,7 +95,8 @@ public:
 		const char* index_path);
 
 	bool restoreTree(
-		const char* index_path);
+		const char* index_path,
+		int d);
 	
 	int mipSearch(
 		int d,
@@ -112,6 +117,10 @@ public:
 		int n,
 		int d,
 		float** data);
+
+	//void readPage(int PageNumber);
+	Node *  findPoint(int index);
+
 };
 
 #endif

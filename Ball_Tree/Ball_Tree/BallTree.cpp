@@ -6,23 +6,30 @@
 #include<string>
 #include<queue>
 #include<fstream>
+#include<vector>
 #include <iostream> // for testing
 #include<sstream>
 using namespace std; // for testing
+
+int currentSum = 0;//查询时保存当前的最大内积
+
 string intToString(int num) {
 	stringstream ss;
 	ss << num;
 	return ss.str();
 }
+
 string floatToString(float num) {
 	stringstream ss;
 	ss << num;
 	return ss.str();
 }
+
 bool BallTree::buildTree(int n, int d, float** data) {
     buildSubTree(root, 1, n, d, data);
     return true;
 }
+
 void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &data) {
     //如果数据量小于N0，则节点为叶子节点
     if (n < N0) {
@@ -57,6 +64,7 @@ void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &da
     //分裂树
     MakeBallTreeSplit(A, B, subroot, n, d, data);
 }
+
 void BallTree::MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data) {
     //声明变量
     int dataCountOfLeft = 0, dataCountOfRight = 0;      //记录左右节点数据个数
@@ -83,6 +91,7 @@ void BallTree::MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, in
     //}
     buildSubTree(subroot->right, subroot->index * 2 + 1, dataCountOfRight, d, dataOfRight);
 }
+
 float* BallTree::FindFurthestData(float* &x, float** &data, int n, int d) {
     float furthestDistance = 0;             //记录最远距离的平方
     int furthestDataPos = 0;                //记录最远距离数据在数组中的位置
@@ -132,13 +141,10 @@ float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
     return sqrt(totalDistanceSquare);
 }
 
+//storeData返回的是槽号, 参数一：data数组，参数二：数组中有多少列，参数三：列中有多少个属性
 int BallTree::storeData(float ** data, int firstDimension, int secondDimension) {
-	int haha;
-	string result = floatToString(data[0][0]);
 	string fileName = intToString(this->dataFileIndex);
 	ofstream file((fileName + ".txt"), ios::binary | ios::app | ios::out);
-	//int num = 12;
-	//file.write((char*)&num, sizeof(int));
 	file.seekp(0, ios::end);
 
 	streampos ps = file.tellp();
@@ -150,25 +156,29 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		fileName = intToString(this->dataFileIndex);
 		file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
 	}
-	result += " " + intToString(this->dataFileIndex);
-	haha = this->dataFileIndex;
-	for (int i = 0; i < firstDimension; i++) {
-		string str;
-		for (int j = 0; j < secondDimension; j++) {
-			float num = data[i][j];
-			file.write((char*)&(num), sizeof(float));
+	//重新获取当前的字节数
+	ps = file.tellp();
+	size = (int)ps;
+	//获取当前的上一个槽号
+	int slot_num = (size / 4) / N0 / (secondDimension);
+	++slot_num;
+	for (int i = 0; i < N0; i++) {
+		if (i < firstDimension) {
+			for (int j = 0; j < secondDimension; j++) {
+				float num = data[i][j];
+				cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
+				file.write((char*)&(num), sizeof(float));
+			}
 		}
-		streampos ps = file.tellp();
-		size = (int)ps;
-		if (size > 1024 * 64) {
-			file.close();
-			++dataFileIndex;
-			fileName = intToString(this->dataFileIndex);
-			file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
+		else {
+			for (int j = 0; j < secondDimension; j++) {
+				float num = 0;
+				file.write((char*)&(num), sizeof(float));
+			}
 		}
 	}
 	file.close();
-	return haha;
+	return slot_num;
 }
 
 bool BallTree::storeTree(const char* index_path) {
@@ -191,21 +201,21 @@ bool BallTree::storeTree(const char* index_path) {
 			index = qu.front().index;
 			dataCount = qu.front().dataCount;
 			dimension = qu.front().dimension;
-			center1 = 0;
-			center2 = 0;
+			int * arr = new int[qu.front().dimension];
+			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = 0;
+			}
 			radius = 0;
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
 			file.write((char*)&dimension, sizeof(int));
-			file.write((char*)&center1, sizeof(float));
-			file.write((char*)&center2, sizeof(float));
+			for (int i = 0; i < qu.front().dimension; i++) {
+				file.write((char*)&arr[i], sizeof(float));
+			}
 			file.write((char*)&radius, sizeof(float));
-			st = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			int dataFirstIndex = qu.front().data[0][0];
-			file.write((char*)&dataFirstIndex, sizeof(int));
-			int pageid = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			file.write((char*)&pageid, sizeof(int));
-			content += st;
+			int page_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&page_index, sizeof(int));
+			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 		}
 		else {
 			int index, dataCount, dimension;
@@ -216,12 +226,16 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&dataCount, sizeof(int));
 			dimension = qu.front().dimension;
 			file.write((char*)&dimension, sizeof(int));
-			center1 = qu.front().center[0];
-			file.write((char*)&center1, sizeof(float));
-			center2 = qu.front().center[1];
-			file.write((char*)&center2, sizeof(float));
+			float * arr = new float[qu.front().dimension];
+			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = qu.front().center[i];
+				file.write((char*)&arr[i], sizeof(float));
+			}
 			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
+			int page_index = 0, slot_index = 0;
+			file.write((char*)&page_index, sizeof(int));
+			file.write((char*)&slot_index, sizeof(int));
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}
@@ -230,3 +244,102 @@ bool BallTree::storeTree(const char* index_path) {
 	file.close();
 	return true;
 }
+
+
+int *BallTree::readData(int pageNumer, int slot,int d) {
+	float bufferPage[16384];
+	//缓冲页
+	ifstream file;
+	string pagename = intToString(pageNumer);
+	pagename += ".txt";
+	file.open(pagename, ios::binary);
+	if (!file.is_open()) {
+		cout << "cannot open the file\n";
+		return false;
+	}
+	//根据页号找到txt文件
+	for (int i = 0; i <= 16384; i++) {
+		file.read((char*)&bufferPage[i], sizeof bufferPage[i]);
+    }
+	//读入所有的页面
+	int len = N0*(d + 1);
+	int *arr=new int[len - 1];
+	for (int i = 0; i <= len - 1; i++)
+		arr[i] = bufferPage[(slot- 1)*len + i];
+	//根据槽号找到数据
+	file.close();
+	return arr;
+}
+
+bool BallTree::restoreTree(const char* index_path, int d) {
+	string indexFilePath(index_path);
+	//ofstream file(indexFilePath, ios::binary);
+	ifstream infile("index.txt", ios::binary);
+	if (!infile.is_open()) {
+		cout << "cannot open the file\n";
+		return false;
+	}
+	infile.seekg(0, ios::end);
+	//queue<Node> qu;
+	qu.push((*(this->root)));
+	int pageNumer = this->dataFileIndex;
+	int slot = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+	data = readData(pageNumer, slot, d);
+	infile.close();
+	return true;
+}
+
+/*
+int mipSearch(int d, float* query) {
+	IndexTree* root = indexTree->getroot();
+	DFS(d, root, query);
+}
+
+int DFS(int d, IndexTree* p, float* query) {
+	if (p == NULL) return;
+	if (p->getDataCount() <= 20) {
+		//get 20 data 
+		int pid = p->getPid();//页号
+		int sid = p->getSid();//槽号
+		if (currentSum > 0) {
+			int sum = 0;
+			float radius = p->getRadius();
+			float* center = p->getCenter();
+			for (int i = 0; i < d; i++) {
+				sum += radius * center[i];
+			}
+			if (sum <= currentSum) return;
+		}
+		vector<Data> vec = getData(pid, sid);
+		for (int i = 0; i < vec.size(); i++) {
+			for (int j = 0; j < d; j++) {
+				
+			}
+		}
+	}
+	if (p->left != NULL)
+		DFS(d, p->left, query);
+	if (p->right != NULL)
+		DFS(d, p->right, query);
+}
+*/
+
+//bool BallTree::insertData(int d, float* data) {
+//	//中心点的选取
+//}
+//
+//bool BallTree::deleteData(int d, float* data) {
+//	if (DistanceBetween(root->center, data, d) >= root->radius)
+//		return false;
+//	Node * current_root = root;
+//	//找到数据之后再每个节点datacount--;
+//	while (current_root->dataCount > N0) {
+//		if (current_root->left != nullptr && DistanceBetween(current_root->left->center, data, d) <= current_root->left->radius)
+//			current_root = current_root->left;
+//		else if (current_root->right != nullptr && DistanceBetween(current_root->right->center, data, d) <= current_root->right->radius)
+//			current_root = current_root->right;
+//		else
+//			return false;
+//	}
+//		
+//}
