@@ -299,7 +299,7 @@ void BallTree::DFS(int d, Node* p, float* query) {
 	//cout << endl;
 
 	cout << "index: " << p->index << endl;
-	if (p->dataCount <= N0) {
+	if (p->dataCount <= N0 && p->dataCount > 0) {
 		//get 20 data 
 		int pid = p->pageNumer;//Ò³ºÅ
 		int sid = p->slot;//²ÛºÅ
@@ -323,17 +323,15 @@ void BallTree::DFS(int d, Node* p, float* query) {
 		}
 		int count = 0;
 		for (int i = 0; i < N0; i++) {
-			float sum = 0, p = 0;
+			float sum = 0;
 			for (int j = 0; j < d + 1; j++) {
 				arr[i][j] = data[count++];
-				//cout << arr[i][j] << " ";
+				//cout << "id: " << arr[i][0] << endl;
+				cout << arr[i][j] << " ";
 				if (j != 0) {
 					sum += arr[i][j] * query[j - 1];
-					p += query[j - 1] * query[j - 1];
 				}
 			}
-			p = sqrt(p);
-			sum = sum + p * radius;
 			if (sum > currentSum) {
 				currentSum = sum;
 				currentIndex = arr[i][0];

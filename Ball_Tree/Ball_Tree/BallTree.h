@@ -76,8 +76,11 @@ public:
             //}
             return;
         }
-		if (subroot->dataCount < N0)
+		if (subroot->dataCount < N0) {
+			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
 			return;
+		}
+			
         //printf("center:");
         //printVector(subroot->center, d);
 		float a = subroot->radius;
