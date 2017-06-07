@@ -178,7 +178,8 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		if (i < firstDimension) {
 			for (int j = 0; j < secondDimension; j++) {
 				float num = data[i][j];
-				cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
+				//测试数据是否输出正确
+				//cout << "page id: " << dataFileIndex << " " << "slot id: " << slot_num << " " << "data: " << num << endl;
 				file.write((char*)&(num), sizeof(float));
 			}
 		}
@@ -214,14 +215,12 @@ bool BallTree::storeTree(const char* index_path) {
 			dataCount = qu.front().dataCount;
 			dimension = qu.front().dimension;
 			int * arr = new int[qu.front().dimension];
-			for (int i = 0; i < qu.front().dimension; i++) {
-				arr[i] = 0;
-			}
-			radius = 0;
+			radius = qu.front().radius;
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
 			file.write((char*)&dimension, sizeof(int));
 			for (int i = 0; i < qu.front().dimension; i++) {
+				arr[i] = qu.front().center[i];
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			file.write((char*)&radius, sizeof(float));
@@ -229,6 +228,7 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&page_index, sizeof(int));
 			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 			file.write((char*)&slot_index, sizeof(int));
+			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 		}
 		else {
 			int index, dataCount, dimension;
@@ -249,6 +249,7 @@ bool BallTree::storeTree(const char* index_path) {
 			int page_index = 0, slot_index = 0;
 			file.write((char*)&page_index, sizeof(int));
 			file.write((char*)&slot_index, sizeof(int));
+			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}

@@ -70,19 +70,20 @@ public:
             return;
         }
         if (subroot->data != nullptr) {
-            printf("index:%d radius:%f dataCount:%d center:", subroot->index, subroot->radius, subroot->dataCount);
-            printVector(subroot->center, d);
-            for (int i = 0; i < subroot->dataCount; i++) {
-                printVector(subroot->data[i], d);
-            }
-            return;
+            //printf("index:%d dataCount:%d\n", subroot->index, subroot->dataCount);
+            //for (int i = 0; i < subroot->dataCount; i++) {
+            //    printVector(subroot->data[i], d);
+            //}
+			//printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
+            //return;
         }
 		if (subroot->dataCount < N0) {
 			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
 			return;
 		}
-			
+
         //printf("center:");
+			
         //printVector(subroot->center, d);
 		float a = subroot->radius;
         printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
