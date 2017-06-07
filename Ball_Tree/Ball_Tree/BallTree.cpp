@@ -203,10 +203,10 @@ bool BallTree::storeTree(const char* index_path) {
 			}
 			file.write((char*)&radius, sizeof(float));
 			st = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			int dataFirstIndex = qu.front().data[0][0];
-			file.write((char*)&dataFirstIndex, sizeof(int));
-			int pageid = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			int pageid = this->dataFileIndex;
 			file.write((char*)&pageid, sizeof(int));
+			int slotid = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&slotid, sizeof(int));
 			content += st;
 		}
 		else {
@@ -229,6 +229,9 @@ bool BallTree::storeTree(const char* index_path) {
 			}
 			radius = qu.front().radius;
 			file.write((char*)&radius, sizeof(float));
+			float num = 0, num2 = 0;
+			file.write((char*)&num, sizeof(float));
+			file.write((char*)&num2, sizeof(float));
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}
@@ -237,6 +240,50 @@ bool BallTree::storeTree(const char* index_path) {
 	file.close();
 	return true;
 }
+
+int *BallTree::readData(int pageNumer, int slot,int d) {
+	float bufferPage[16384];
+	//缓冲页
+	ifstream file;
+	string pagename = intToString(pageNumer);
+	pagename += ".txt";
+	file.open(pagename, ios::binary);
+	if (!file.is_open()) {
+		cout << "cannot open the file\n";
+		return false;
+	}
+	//根据页号找到txt文件
+	for (int i = 0; i <= 16384; i++) {
+	file.read((char*)&bufferPage[i],sizeof bufferPage[i])
+    }
+	//读入所有的页面
+	int len = N0*(d + 1);
+	int *arr=new int[len - 1];
+	for (int i = 0; i <= len - 1; i++)
+		arr[i] = bufferPage[(slot- 1)*len + i];
+	//根据槽号找到数据
+	file.close();
+	return arr;
+}
+
+bool BallTree::restoreTree(const char* index_path, int d) {
+	string indexFilePath(index_path);
+	//ofstream file(indexFilePath, ios::binary);
+	ifstream infile("index.txt", ios::binary);
+	if (!infile.is_open()) {
+		cout << "cannot open the file\n";
+		return false;
+	}
+	infile.(0, ios::end);
+	//queue<Node> qu;
+	qu.push((*(this->root)));
+	int pageNumer = this->dataFileIndex;
+	int slot = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+	data[] = readData(pageNumer, slot, d);
+	infile.close();
+	return true;
+}
+
 int BallTree::mipSearch(int d, float* query) {
 
 }

@@ -39,6 +39,7 @@ public:
 	int dataFileIndex = 0;
     Node* root;
 	queue<Node> qu;
+	int *data;
 	//float bufferPage[16384];//ª∫≥Â“≥
 	//long flag;//ø’œ–¥¶œ¬±Í
 
@@ -48,6 +49,7 @@ public:
     ~BallTree() {}
 
 	int storeData(float ** data, int firstDimension, int secondDimension);
+	int *readData(int pageNumer, int slot,int d);
 
 	bool buildTree(
 		int n,
