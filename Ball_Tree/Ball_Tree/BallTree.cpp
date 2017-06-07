@@ -141,11 +141,8 @@ float BallTree::DistanceBetween(float* &pointA, float* &pointB, int d) {
 //storeData返回的是槽号, 参数一：data数组，参数二：数组中有多少列，参数三：列中有多少个属性
 
 int BallTree::storeData(float ** data, int firstDimension, int secondDimension) {
-	string result = floatToString(data[0][0]);
 	string fileName = intToString(this->dataFileIndex);
 	ofstream file((fileName + ".txt"), ios::binary | ios::app | ios::out);
-	//int num = 12;
-	//file.write((char*)&num, sizeof(int));
 	file.seekp(0, ios::end);
 
 	streampos ps = file.tellp();
@@ -157,9 +154,12 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 		fileName = intToString(this->dataFileIndex);
 		file.open((fileName + ".txt"), ios::binary | ios::app | ios::out);
 	}
-	int slot_num = (size / 4) / N0;
+	//重新获取当前的字节数
+	ps = file.tellp();
+	size = (int)ps;
+	//获取当前的上一个槽号
+	int slot_num = (size / 4) / N0 / (secondDimension);
 	++slot_num;
-	result += " " + intToString(this->dataFileIndex);
 	for (int i = 0; i < N0; i++) {
 		if (i < firstDimension) {
 			for (int j = 0; j < secondDimension; j++) {
@@ -203,13 +203,10 @@ bool BallTree::storeTree(const char* index_path) {
 			for (int i = 0; i < qu.front().dimension; i++) {
 				arr[i] = 0;
 			}
-			//center1 = 0;
-			//center2 = 0;
 			radius = 0;
 			file.write((char*)&index, sizeof(int));
 			file.write((char*)&dataCount, sizeof(int));
 			file.write((char*)&dimension, sizeof(int));
-			//file.write((char*)&center1, sizeof(float));
 			for (int i = 0; i < qu.front().dimension; i++) {
 				file.write((char*)&arr[i], sizeof(float));
 			}
@@ -227,10 +224,6 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&dataCount, sizeof(int));
 			dimension = qu.front().dimension;
 			file.write((char*)&dimension, sizeof(int));
-			//center1 = qu.front().center[0];
-			//file.write((char*)&center1, sizeof(float));
-			//center2 = qu.front().center[1];
-			//file.write((char*)&center2, sizeof(float));
 			float * arr = new float[qu.front().dimension];
 			for (int i = 0; i < qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
@@ -329,26 +322,22 @@ int DFS(int d, IndexTree* p, float* query) {
 }
 */
 
-int BallTree::mipSearch(int d, float* query) {
-
-}
-
-bool BallTree::insertData(int d, float* data) {
-	//中心点的选取
-}
-
-bool BallTree::deleteData(int d, float* data) {
-	if (DistanceBetween(root->center, data, d) >= root->radius)
-		return false;
-	Node * current_root = root;
-	//找到数据之后再每个节点datacount--;
-	while (current_root->dataCount > N0) {
-		if (current_root->left != nullptr && DistanceBetween(current_root->left->center, data, d) <= current_root->left->radius)
-			current_root = current_root->left;
-		else if (current_root->right != nullptr && DistanceBetween(current_root->right->center, data, d) <= current_root->right->radius)
-			current_root = current_root->right;
-		else
-			return false;
-	}
-		
-}
+//bool BallTree::insertData(int d, float* data) {
+//	//中心点的选取
+//}
+//
+//bool BallTree::deleteData(int d, float* data) {
+//	if (DistanceBetween(root->center, data, d) >= root->radius)
+//		return false;
+//	Node * current_root = root;
+//	//找到数据之后再每个节点datacount--;
+//	while (current_root->dataCount > N0) {
+//		if (current_root->left != nullptr && DistanceBetween(current_root->left->center, data, d) <= current_root->left->radius)
+//			current_root = current_root->left;
+//		else if (current_root->right != nullptr && DistanceBetween(current_root->right->center, data, d) <= current_root->right->radius)
+//			current_root = current_root->right;
+//		else
+//			return false;
+//	}
+//		
+//}
