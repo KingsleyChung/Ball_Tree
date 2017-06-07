@@ -60,7 +60,7 @@ int main() {
 	ball_tree1.storeTree(index_path);
 	BallTree ball_tree2;
 	ball_tree2.restoreTree(index_path, d);
-	ball_tree1.preorderPrint(d);
+	ball_tree2.preorderPrint(d);
 	system("pause");
     //===================================================================================
 

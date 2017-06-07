@@ -362,6 +362,14 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		ifile.read((char*)&pageNumber, sizeof(int));
 		ifile.read((char*)&slotNumer, sizeof(int));
 		currentNode = findPoint(index);
+		if (currentNode == nullptr) {
+			cout << index << endl;
+			if (root->left != nullptr)
+				cout << "ddf" << endl;
+			if (root->right != nullptr)
+				cout << "ffd" << endl;
+			return false;
+		}
 		currentNode->index = index;
 		currentNode->dataCount = datacount;
 		currentNode->dimension = dimension;
@@ -369,9 +377,11 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		currentNode->radius = radius;
 		currentNode->pageNumer = pageNumber;
 		currentNode->slot = slotNumer;
-		//cout << index;//<< datacount << dimension << pageNumber << slotNumer << endl;
-		ifile.close();
+		//if (root->left != nullptr && root->right != nullptr)
+			//cout << "mabi" << endl;
+		//cout << index<< datacount << dimension << pageNumber << slotNumer << endl;
 	}
+	ifile.close();
 	return true;
 }
 
@@ -381,35 +391,41 @@ Node *  BallTree::findPoint(int index) {
 		return root;
 	}
 	Node * currentNode = root;
+	Node * lastNode = root;
 	int layer = 0;
 	int result = 1;
 	while (result < index) {
 		layer++;
 		result += pow(2, layer);
 	}
+	int temp = index;
 	int j = layer;
 	while (currentNode != nullptr) {
-		if (index - (result - pow(2, layer)) <= pow(2, j) / 2) {
+		if (temp - (result - pow(2, layer)) <= pow(2, j) / 2) {
 			currentNode = currentNode->left;
 			j--;
 		}
 		else {
 			currentNode = currentNode->right;
-			index = index - pow(2, j) / 2;
+			temp = temp - pow(2, j) / 2;
 			j--;
 		}
-		if (2 * currentNode->index == index) {
-			currentNode->left = new Node();
-			return currentNode->left;
+		if (lastNode != nullptr && 2 * lastNode->index == index) {
+			lastNode->left = new Node();
+			return lastNode->left;
 		}
-		else if (2 * currentNode->index + 1 == index) {
-			currentNode->right = new Node();
-			return currentNode->right;
+		else if (lastNode != nullptr && 2 * lastNode->index + 1 == index) {
+			lastNode->right = new Node();
+			return lastNode->right;
+		}
+		else {
+			lastNode = currentNode;
 		}
 	}
+	//return nullptr;
 	while (true)
 	{
-		printf("%d", index);
+		printf("%d\n", index);
 	}
 }
 
