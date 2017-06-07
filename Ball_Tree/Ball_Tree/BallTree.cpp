@@ -246,7 +246,6 @@ bool BallTree::storeTree(const char* index_path) {
 	return true;
 }
 
-
 int *BallTree::readData(int pageNumer, int slot,int d) {
 	//string indexFilePath(index_path);
 	////ofstream file(indexFilePath, ios::binary);
@@ -263,8 +262,9 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	//data = readData(pageNumer, slot, d);
 	//infile.close();
 
-	float bufferPage[16384];
 	//缓冲页
+	float bufferPage[16384];
+	//根据页号找到txt文件
 	ifstream file;
 	string pagename = intToString(pageNumer);
 	pagename += ".txt";
@@ -273,54 +273,64 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 		cout << "cannot open the file\n";
 		return false;
 	}
-	//根据页号找到txt文件
+	//读入当前的页面
 	for (int i = 0; i <= 16384; i++) {
 		file.read((char*)&bufferPage[i], sizeof bufferPage[i]);
     }
-	//读入所有的页面
+	//根据槽号找到数据
 	int len = N0 * (d + 1);
 	int *arr = new int[len - 1];
 	for (int i = 0; i <= len - 1; i++)
 		arr[i] = bufferPage[(slot- 1)*len + i];
-	//根据槽号找到数据
 	file.close();
 	return arr;
 }
 
-/*
-int mipSearch(int d, float* query) {
-	IndexTree* root = indexTree->getroot();
-	DFS(d, root, query);
-}
-
-int DFS(int d, IndexTree* p, float* query) {
-	if (p == NULL) return;
-	if (p->getDataCount() <= 20) {
-		//get 20 data 
-		int pid = p->getPid();//页号
-		int sid = p->getSid();//槽号
-		if (currentSum > 0) {
-			int sum = 0;
-			float radius = p->getRadius();
-			float* center = p->getCenter();
-			for (int i = 0; i < d; i++) {
-				sum += radius * center[i];
-			}
-			if (sum <= currentSum) return;
-		}
-		vector<Data> vec = getData(pid, sid);
-		for (int i = 0; i < vec.size(); i++) {
-			for (int j = 0; j < d; j++) {
-				
-			}
-		}
-	}
-	if (p->left != NULL)
-		DFS(d, p->left, query);
-	if (p->right != NULL)
-		DFS(d, p->right, query);
-}
-*/
+//int mipSearch(int d, float* query) {
+//	IndexTree* root = indexTree->getroot();
+//	DFS(d, root, query);
+//}
+//
+//int DFS(int d, IndexTree* p, float* query) {
+//	if (p == NULL) return;
+//	if (p->getDataCount() <= 20) {
+//		//get 20 data 
+//		int pid = p->getPid();//页号
+//		int sid = p->getCid();//槽号
+//		if (currentSum > 0) {
+//			int sum = 0;
+//			float radius = p->getRadius();
+//			float* center = p->getCenter();
+//			for (int i = 0; i < d; i++) {
+//				sum += radius * center[i];
+//			}
+//			if (sum <= currentSum) return;
+//		}
+//		int* a = ball_tree1.readData(pid, sid, d);
+//		int **arr;
+//		arr = new int*[N0];
+//		for (int n = 0; n < N0; n++) {
+//			arr[n] = new int[d + 1];
+//		}
+//		int count = 0;
+//		for (int i = 0; i < N0; i++) {
+//			for (int j = 0; j < d + 1; j++) {
+//				arr[i][j] = a[count++];
+//				cout << arr[i][j] << " ";
+//			}
+//			cout << endl;
+//		}
+//		for (int i = 0; i < vec.size(); i++) {
+//			for (int j = 0; j < d; j++) {
+//				
+//			}
+//		}
+//	}
+//	if (p->left != NULL)
+//		DFS(d, p->left, query);
+//	if (p->right != NULL)
+//		DFS(d, p->right, query);
+//}
 
 int BallTree::mipSearch(int d, float* query) {
 	return 0;
