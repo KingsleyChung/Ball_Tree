@@ -55,7 +55,7 @@ int main() {
     //for testing build tree and display result
     BallTree ball_tree1;
     ball_tree1.buildTree(n, d, data);
-	//ball_tree1.storeTree("");
+	ball_tree1.storeTree("");
     ball_tree1.preorderPrint(d);
 	ball_tree1.storeTree(index_path);
 
@@ -82,8 +82,8 @@ int main() {
 	//ball_tree1.preorderPrint(d);
 
 
-	float* f = new float[2]{ 1,1 };
-	cout << "query: " << ball_tree2.mipSearch(d, f) << endl;
+	//float* f = new float[2]{ 1,1 };
+	//cout << "query: " << ball_tree2.mipSearch(d, f) << endl;
 
 	system("pause");
     //===================================================================================

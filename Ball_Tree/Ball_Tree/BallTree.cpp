@@ -221,7 +221,7 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&dimension, sizeof(int));
 			for (int i = 1; i <= qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
-				cout << "圆心: " << arr[i] << endl;
+				//cout << "圆心: " << arr[i] << endl;
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			file.write((char*)&radius, sizeof(float));
@@ -229,7 +229,7 @@ bool BallTree::storeTree(const char* index_path) {
 			file.write((char*)&page_index, sizeof(int));
 			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
 			file.write((char*)&slot_index, sizeof(int));
-			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 		}
 		else {
 			int index, dataCount, dimension;
@@ -243,7 +243,7 @@ bool BallTree::storeTree(const char* index_path) {
 			float * arr = new float[qu.front().dimension + 1];
 			for (int i = 1; i <= qu.front().dimension; i++) {
 				arr[i] = qu.front().center[i];
-				cout << "圆心: " << arr[i] << endl;
+				//cout << "圆心: " << arr[i] << endl;
 				file.write((char*)&arr[i], sizeof(float));
 			}
 			radius = qu.front().radius;
@@ -251,7 +251,7 @@ bool BallTree::storeTree(const char* index_path) {
 			int page_index = 0, slot_index = 0;
 			file.write((char*)&page_index, sizeof(int));
 			file.write((char*)&slot_index, sizeof(int));
-			cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
 			qu.push(*(qu.front().left));
 			qu.push(*(qu.front().right));
 		}
@@ -417,9 +417,10 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		currentNode->radius = radius;
 		currentNode->pageNumer = pageNumber;
 		currentNode->slot = slotNumer;
+		printVector(center, d);
 		//if (root->left != nullptr && root->right != nullptr)
 			//cout << "mabi" << endl;
-		//cout << index<< datacount << dimension << pageNumber << slotNumer << endl;
+		cout << index<< datacount << dimension << pageNumber << slotNumer << endl;
 	}
 	ifile.close();
 	return true;
