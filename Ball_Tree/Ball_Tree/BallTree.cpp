@@ -283,6 +283,14 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	//data = readData(pageNumer, slot, d);
 	//infile.close();
 
+	if (pageNumer == 0 && slot == 0) {
+		int* a = new int[N0 * (d + 1)];
+		for (int i = 0; i < N0 * (d + 1); i++) {
+			a[i] = 0;
+		}
+		return a;
+	}
+
 	//缓冲页
 	float bufferPage[16384];
 	//根据页号找到txt文件
@@ -307,8 +315,9 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	return arr;
 }
 
-
 int BallTree::mipSearch(int d, float* query) {
+	currentSum = 0;//查询时保存当前的最大内积
+	currentIndex = -1;//记录当前数据项id
 	DFS(d, root, query);
 	return currentIndex;
 }
@@ -319,7 +328,7 @@ void BallTree::DFS(int d, Node* p, float* query) {
 	//if (p->right == NULL) cout << "0 ";
 	//cout << endl;
 
-	//cout << "index: " << p->index << endl;
+	cout << "index: " << p->index << endl;
 	if (p->dataCount <= N0 && p->dataCount > 0) {
 		//get 20 data 
 		int pid = p->pageNumer;//页号
@@ -328,8 +337,8 @@ void BallTree::DFS(int d, Node* p, float* query) {
 		float* center = p->center;
 		float tmp = 0, q = 0;
 		for (int i = 0; i < d; i++) {
-			tmp += query[i] * center[i];
-			q += query[i] * query[i];
+			tmp += query[i+1] * center[i];
+			q += query[i+1] * query[i+1];
 		}
 		q = sqrt(q);
 		tmp = tmp + q * radius;
@@ -346,12 +355,13 @@ void BallTree::DFS(int d, Node* p, float* query) {
 				float sum = 0;
 				for (int j = 0; j <= d; j++) {
 					arr[i][j] = data[count++];
-					//cout << "id: " << arr[i][0] << endl;
 					//cout << arr[i][j] << " ";
 					if (j != 0) {
-						sum += arr[i][j] * query[j - 1];
+						sum += arr[i][j] * query[j];
 					}
 				}
+				cout << "id: " << arr[i][0] << endl;
+				//cout << "index: " << p->index << endl;
 				if (sum > currentSum) {
 					currentSum = sum;
 					currentIndex = arr[i][0];
@@ -408,7 +418,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		//ifile.read((char*)center, sizeof(float) * d);
 		for (int i = 0; i < d; ++i) {
 			ifile.read((char*)&center[i], sizeof(float));
-			printf("%f ", center[i]);
+			//printf("%f ", center[i]);
 		}
 		ifile.read((char*)&radius, sizeof(float));
 		ifile.read((char*)&pageNumber, sizeof(int));
@@ -429,7 +439,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		currentNode->pageNumer = pageNumber;
 		currentNode->slot = slotNumer;
 		//printVector(center, d);
-		printf("index:%d datacount:%d dimension:%d pageNumber:%d SlotNumber: %d  Radius:%f \n", index, datacount, dimension, pageNumber, slotNumer, radius);
+		//printf("index:%d datacount:%d dimension:%d pageNumber:%d SlotNumber: %d  Radius:%f \n", index, datacount, dimension, pageNumber, slotNumer, radius);
 		//cout << index << datacount << dimension << pageNumber << slotNumer << endl;
 	}
 	ifile.close();

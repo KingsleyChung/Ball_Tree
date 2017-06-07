@@ -44,9 +44,9 @@ int main() {
 		return 1;
 	}
 
-	BallTree ball_tree1;
+	/*BallTree ball_tree1;
 	ball_tree1.buildTree(n, d, data);
-	ball_tree1.storeTree(index_path);
+	ball_tree1.storeTree(index_path);*/
 
 	if (!read_data(qn, d, query, query_path));
 	FILE* fout = fopen(output_path, "w");
