@@ -68,10 +68,10 @@ public:
             return;
         }
         if (subroot->data != nullptr) {
-            printf("index:%d dataCount:%d\n", subroot->index, subroot->dataCount);
-            for (int i = 0; i < subroot->dataCount; i++) {
-                printVector(subroot->data[i], d);
-            }
+            //printf("index:%d dataCount:%d\n", subroot->index, subroot->dataCount);
+            //for (int i = 0; i < subroot->dataCount; i++) {
+            //    printVector(subroot->data[i], d);
+            //}
             return;
         }
         printf("center:");

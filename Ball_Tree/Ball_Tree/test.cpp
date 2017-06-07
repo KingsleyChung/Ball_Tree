@@ -55,9 +55,13 @@ int main() {
     //for testing build tree and display result
     BallTree ball_tree1;
     ball_tree1.buildTree(n, d, data);
-	ball_tree1.storeTree("");
     ball_tree1.preorderPrint(d);
-    system("pause");
+	system("pause");
+	//ball_tree1.storeTree(index_path);
+	//BallTree ball_tree2;
+	//ball_tree2.restoreTree(index_path, d);
+	//ball_tree1.preorderPrint(d);
+	//system("pause");
     //===================================================================================
 
 	/*BallTree ball_tree1;

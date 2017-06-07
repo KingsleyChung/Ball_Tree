@@ -288,11 +288,12 @@ int DFS(int d, IndexTree* p, float* query) {
 */
 
 int BallTree::mipSearch(int d, float* query) {
-
+	return 0;
 }
 
 bool BallTree::insertData(int d, float* data) {
 	//中心点的选取
+	return true;
 }
 
 bool BallTree::deleteData(int d, float* data) {
@@ -308,5 +309,66 @@ bool BallTree::deleteData(int d, float* data) {
 		else
 			return false;
 	}
-		
+	return true;
+}
+
+bool BallTree::restoreTree(const char* index_path, int d) {
+	ifstream ifile(index_path, ios::in | ios::binary);
+	Node * currentNode = root;
+	while (!ifile.eof()) {
+		int index, datacount, dimension, pageNumber;
+		float * center = new float[d];
+		float radius;
+		long slotNumer;
+		ifile.read((char*)&index, sizeof(int));
+		ifile.read((char*)&datacount, sizeof(int));
+		ifile.read((char*)&dimension, sizeof(int));
+		ifile.read((char*)center, sizeof(float) * d);
+		ifile.read((char*)&radius, sizeof(float));
+		ifile.read((char*)&pageNumber, sizeof(int));
+		ifile.read((char*)&slotNumer, sizeof(long));
+		currentNode = findPoint(index);
+		currentNode->index = index;
+		currentNode->dataCount = datacount;
+		currentNode->dimension = dimension;
+		currentNode->center = center;
+		currentNode->radius = radius;
+		currentNode->pageNumer = pageNumber;
+		currentNode->slot = slotNumer;
+	}
+	return true;
+}
+
+Node *  BallTree::findPoint(int index) {
+	if (index == 1) {
+		root = new Node();
+		return root;
+	}
+	Node * currentNode = root;
+	int layer = 0;
+	int result = 1;
+	while (result < index) {
+		layer++;
+		result += pow(2, layer);
+	}
+	int j = layer;
+	while (currentNode != nullptr) {
+		if (index - (result - pow(2, layer)) <= pow(2, j) / 2) {
+			currentNode = currentNode->left;
+			j--;
+		}
+		else {
+			currentNode = currentNode->right;
+			index = index - pow(2, j) / 2;
+			j--;
+		}
+		if (2 * currentNode->index == index) {
+			currentNode->left = new Node();
+			return currentNode->left;
+		}
+		else if (2 * currentNode->index + 1 == index) {
+			currentNode->right = new Node();
+			return currentNode->right;
+		}
+	}
 }
