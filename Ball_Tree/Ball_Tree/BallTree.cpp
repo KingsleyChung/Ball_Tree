@@ -34,7 +34,20 @@ bool BallTree::buildTree(int n, int d, float** data) {
 void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &data) {
     //如果数据量小于N0，则节点为叶子节点
     if (n < N0) {
-        subroot = new Node(index, n, d, nullptr, 0);
+        float* center;
+        float radius;
+        if (n == 1) {
+            center = data[0];
+            radius = 0;
+        }
+        else {
+            center = FindCenter(data, n, d);
+            float* furthestDataFromCenter = FindFurthestData(center, data, n, d);
+            //printVector(center, d);
+            //printVector(furthestDataFromCenter, d);
+            radius = DistanceBetween(center, furthestDataFromCenter, d);
+        }
+        subroot = new Node(index, n, d, center, radius);
         //复制数据
         subroot->data = new float*[n];
         for (int i = 0; i < n; i++) {
@@ -288,16 +301,18 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 
 
 int BallTree::mipSearch(int d, float* query) {
-	if (root->left == NULL) cout << "0";
-	if (root->right == NULL) cout << "0";
 	DFS(d, root, query);
 	return currentIndex;
 }
 
 void BallTree::DFS(int d, Node* p, float* query) {
 	if (p == NULL) return;
+	//if (p->left == NULL) cout << "0 ";
+	//if (p->right == NULL) cout << "0 ";
+	//cout << endl;
+
 	cout << "index: " << p->index << endl;
-	if (p->dataCount <= N0) {
+	if (p->dataCount <= N0 && p->dataCount > 0) {
 		//get 20 data 
 		int pid = p->pageNumer;//页号
 		int sid = p->slot;//槽号
@@ -321,17 +336,15 @@ void BallTree::DFS(int d, Node* p, float* query) {
 		}
 		int count = 0;
 		for (int i = 0; i < N0; i++) {
-			float sum = 0, p = 0;
+			float sum = 0;
 			for (int j = 0; j < d + 1; j++) {
 				arr[i][j] = data[count++];
-				//cout << arr[i][j] << " ";
+				//cout << "id: " << arr[i][0] << endl;
+				cout << arr[i][j] << " ";
 				if (j != 0) {
 					sum += arr[i][j] * query[j - 1];
-					p += query[j - 1] * query[j - 1];
 				}
 			}
-			p = sqrt(p);
-			sum = sum + p * radius;
 			if (sum > currentSum) {
 				currentSum = sum;
 				currentIndex = arr[i][0];

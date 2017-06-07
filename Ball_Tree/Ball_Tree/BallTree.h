@@ -81,7 +81,9 @@ public:
 			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
 			return;
 		}
-        printf("center:");
+
+        //printf("center:");
+			
         //printVector(subroot->center, d);
 		float a = subroot->radius;
         printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
