@@ -57,8 +57,6 @@ void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &da
     float* center = FindCenter(data, n, d);
     //printVector(center, d);//for testing
     float* furthestDataFromCenter = FindFurthestData(center, data, n, d);
-    printVector(center, d);
-    printVector(furthestDataFromCenter, d);
     float radius = DistanceBetween(center, furthestDataFromCenter, d);
     subroot = new Node(index, n, d, center, radius);
     //·ÖÁÑÊ÷
@@ -248,6 +246,7 @@ bool BallTree::storeTree(const char* index_path) {
 
 int *BallTree::readData(int pageNumer, int slot,int d) {
 	//string indexFilePath(index_path);
+	////string indexFilePath(index_path);
 	////ofstream file(indexFilePath, ios::binary);
 	//ifstream infile("index.txt", ios::binary);
 	//if (!infile.is_open()) {
@@ -285,6 +284,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	file.close();
 	return arr;
 }
+
 
 //int mipSearch(int d, float* query) {
 //	IndexTree* root = indexTree->getroot();
@@ -332,6 +332,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 //		DFS(d, p->right, query);
 //}
 
+
 int BallTree::mipSearch(int d, float* query) {
 	return 0;
 }
@@ -358,20 +359,21 @@ bool BallTree::deleteData(int d, float* data) {
 }
 
 bool BallTree::restoreTree(const char* index_path, int d) {
-	ifstream ifile(index_path, ios::in | ios::binary);
+	//cout << index_path << endl;
+	ifstream ifile("index.txt", ios::binary);
 	Node * currentNode = root;
 	while (!ifile.eof()) {
 		int index, datacount, dimension, pageNumber;
 		float * center = new float[d];
 		float radius;
-		long slotNumer;
+		int slotNumer;
 		ifile.read((char*)&index, sizeof(int));
 		ifile.read((char*)&datacount, sizeof(int));
 		ifile.read((char*)&dimension, sizeof(int));
 		ifile.read((char*)center, sizeof(float) * d);
 		ifile.read((char*)&radius, sizeof(float));
 		ifile.read((char*)&pageNumber, sizeof(int));
-		ifile.read((char*)&slotNumer, sizeof(long));
+		ifile.read((char*)&slotNumer, sizeof(int));
 		currentNode = findPoint(index);
 		currentNode->index = index;
 		currentNode->dataCount = datacount;
@@ -380,6 +382,8 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		currentNode->radius = radius;
 		currentNode->pageNumer = pageNumber;
 		currentNode->slot = slotNumer;
+		//cout << index;//<< datacount << dimension << pageNumber << slotNumer << endl;
+		ifile.close();
 	}
 	return true;
 }
@@ -415,6 +419,10 @@ Node *  BallTree::findPoint(int index) {
 			currentNode->right = new Node();
 			return currentNode->right;
 		}
+	}
+	while (true)
+	{
+		printf("%d", index);
 	}
 }
 
