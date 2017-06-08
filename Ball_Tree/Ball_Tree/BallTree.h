@@ -40,7 +40,7 @@ public:
 	int dataFileIndex = 0;
     Node* root;
 	queue<Node> qu;
-	int *data;
+	float *data;
 	//float bufferPage[16384];//»º³åÒ³
 	//long flag;//¿ÕÏÐ´¦ÏÂ±ê
 
@@ -50,7 +50,7 @@ public:
     ~BallTree() {}
 
 	int storeData(float ** data, int firstDimension, int secondDimension);
-	int *readData(int pageNumer, int slot,int d);
+	float *readData(int pageNumer, int slot,int d);
 
 	bool buildTree(
 		int n,
@@ -71,7 +71,7 @@ public:
             return;
         }
         if (subroot->data != nullptr) {
-            printf("index:%d radius:%f dataCount:%d center:\n", subroot->index[0], subroot->radius, subroot->dataCount);
+            //printf("index:%d radius:%f dataCount:%d center:\n", subroot->index[0], subroot->radius, subroot->dataCount);
             //printVector(subroot->center, d);
             //for (int i = 0; i < subroot->dataCount; i++) {
             //    printVector(subroot->data[i], d);
@@ -79,15 +79,15 @@ public:
             return;
         }
 		if (subroot->dataCount < N0) {
-			printVector(subroot->center, d);
-			printf("index:%d radius:%f dataCount:%d\n", subroot->index[0], subroot->radius, subroot->dataCount);
+			//printVector(subroot->center, d);
+			//printf("index:%d radius:%f dataCount:%d\n", subroot->index[0], subroot->radius, subroot->dataCount);
 			return;
 		}
 			
-        printf("center:");
-        printVector(subroot->center, d);
+        //printf("center:");
+        //printVector(subroot->center, d);
 		float a = subroot->radius;
-        printf("index:%d radius:%f dataCount:%d left:%d right:%d  \n", subroot->index[0], subroot->radius, subroot->dataCount, subroot->left->index[0], subroot->right->index[0]);
+        //printf("index:%d radius:%f dataCount:%d left:%d right:%d  \n", subroot->index[0], subroot->radius, subroot->dataCount, subroot->left->index[0], subroot->right->index[0]);
 		//printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
 		//printVector(subroot->center, d);
 		preorderTesting(subroot->left, d);

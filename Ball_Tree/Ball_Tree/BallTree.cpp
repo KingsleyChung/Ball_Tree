@@ -11,7 +11,7 @@
 #include<sstream>
 using namespace std; // for testing
 
-float currentSum = 0;//查询时保存当前的最大内积
+float currentSum = -2147483648.0;//查询时保存当前的最大内积
 int currentIndex = -1;//记录当前数据项id
 
 string intToString(int num) {
@@ -288,7 +288,7 @@ bool BallTree::storeTree(const char* index_path) {
 	return true;
 }
 
-int *BallTree::readData(int pageNumer, int slot,int d) {
+float *BallTree::readData(int pageNumer, int slot,int d) {
 	//string indexFilePath(index_path);
 	////string indexFilePath(index_path);
 	////ofstream file(indexFilePath, ios::binary);
@@ -306,7 +306,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 	//infile.close();
 
 	if (pageNumer == 0 && slot == 0) {
-		int* a = new int[N0 * (d + 1)];
+		float* a = new float[N0 * (d + 1)];
 		for (int i = 0; i < N0 * (d + 1); i++) {
 			a[i] = 0;
 		}
@@ -330,7 +330,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
     }
 	//根据槽号找到数据
 	int len = N0 * (d + 1);
-	int *arr = new int[len];
+	float *arr = new float[len];
 	for (int i = 0; i < len; i++)
 		arr[i] = bufferPage[(slot-1)*len + i];
 	file.close();
@@ -338,7 +338,7 @@ int *BallTree::readData(int pageNumer, int slot,int d) {
 }
 
 int BallTree::mipSearch(int d, float* query) {
-	currentSum = 0;//查询时保存当前的最大内积
+	currentSum = -2147483648.0;//查询时保存当前的最大内积
 	currentIndex = -1;//记录当前数据项id
 	DFS(d, root, query);
 	return currentIndex;
@@ -366,11 +366,11 @@ void BallTree::DFS(int d, Node* p, float* query) {
 		tmp = tmp + q * radius;
 		if (tmp > currentSum) {
 			//cout << "index: " << p->index << endl;
-			int* data = readData(pid, sid, d);
-			int** arr;
-			arr = new int*[N0];
+			float* data = readData(pid, sid, d);
+			float** arr;
+			arr = new float*[N0];
 			for (int n = 0; n < N0; n++) {
-				arr[n] = new int[d + 1];
+				arr[n] = new float[d + 1];
 			}
 			int count = 0;
 			for (int i = 0; i < N0; i++) {
@@ -443,7 +443,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 			ifile.read((char*)&center[i], sizeof(float));
 			//printf("%f ", center[i]);
 		}
-		cout << endl;
+		//cout << endl;
 		ifile.read((char*)&radius, sizeof(float));
 		ifile.read((char*)&pageNumber, sizeof(int));
 		ifile.read((char*)&slotNumer, sizeof(int));
@@ -497,7 +497,7 @@ Node *  BallTree::findPoint(int * index) {
 	}
 	while (true)
 	{
-		cout << "hhhhh" << endl;
+		//cout << "hhhhh" << endl;
 		int a;
 		cin >> a;
 	}
