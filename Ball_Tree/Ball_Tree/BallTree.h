@@ -9,7 +9,7 @@ using namespace std;//for testing
 
 class Node{
 public:
-    int index;              //序号
+    int* index;              //序号
     int dataCount;          //此分支的数据量
     int dimension;          //维度
     float* center;          //圆心向量
@@ -20,7 +20,7 @@ public:
 	int pageNumer;			//对应数据的页号	
 	int slot;				//对应数据的槽号	
 
-    Node(int _index = -1, int _dataCount = -1, int _dimension = -1, float* _center = nullptr, float _radius = 0, int PageNumer = -1, int Slot = -1) {       //构造函数
+    Node(int* _index, int _dataCount = -1, int _dimension = -1, float* _center = nullptr, float _radius = 0, int PageNumer = -1, int Slot = -1) {       //构造函数
         index = _index;
         dataCount = _dataCount;
         dimension = _dimension;
@@ -36,6 +36,7 @@ public:
 
 class BallTree {
 public:
+    int indexCount;
 	int dataFileIndex = 0;
     Node* root;
 	queue<Node> qu;
@@ -56,7 +57,7 @@ public:
 		int d,
 		float** data);
 
-    void buildSubTree(Node* &subroot, int previousIndex, int n, int d, float** &data);              //建立二叉树
+    void buildSubTree(Node* &subroot, int* index, int n, int d, float** &data);              //建立二叉树
     void MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data);      //分裂
     float* FindFurthestData(float* &x, float** &data, int n, int d);                                //寻找距离最远的数据
     int CloserTo(float* &selectedData, float* &A, float* &B, int d);                                //比较选定点距离A、B哪个比较近，距离A较近或距离A、B相等返回1，其他返回2

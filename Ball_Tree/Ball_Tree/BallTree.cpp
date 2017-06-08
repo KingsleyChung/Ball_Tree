@@ -450,7 +450,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		if (ifile.eof()) {
 			break;
 		}
-		currentNode = findPoint(index);
+		//currentNode = findPoint(index);
 		if (currentNode == nullptr) {
 			//cout << index << endl;
 			return false;
