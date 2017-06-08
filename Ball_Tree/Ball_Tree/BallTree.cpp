@@ -232,7 +232,7 @@ bool BallTree::storeTree(const char* index_path) {
 				index[i] = qu.front().index[i];
 				file.write((char*)&index[i], sizeof(int));
 			}
-			file.write((char*)&index, sizeof(int));
+			//file.write((char*)&index, sizeof(int));
 			dataCount = qu.front().dataCount;
 			file.write((char*)&dataCount, sizeof(int));
 			dimension = qu.front().dimension;
@@ -260,7 +260,8 @@ bool BallTree::storeTree(const char* index_path) {
 				index[i] = qu.front().index[i];
 				file.write((char*)&index[i], sizeof(int));
 			}
-			file.write((char*)&index, sizeof(int));
+			//cout << index[0] << " " << index[1] << " " << index[2] <<"dfdfdf" << endl;
+			//file.write((char*)&index, sizeof(int));
 			dataCount = qu.front().dataCount;
 			file.write((char*)&dataCount, sizeof(int));
 			dimension = qu.front().dimension;
@@ -425,7 +426,6 @@ bool BallTree::deleteData(int d, float* data) {
 }
 
 bool BallTree::restoreTree(const char* index_path, int d) {
-	//cout << index_path << endl;
 	ifstream ifile("index.txt", ios::binary);
 	Node * currentNode;
 	while (!ifile.eof()) {
@@ -441,7 +441,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		ifile.read((char*)&dimension, sizeof(int));
 		for (int i = 0; i < d; ++i) {
 			ifile.read((char*)&center[i], sizeof(float));
-			printf("%f ", center[i]);
+			//printf("%f ", center[i]);
 		}
 		cout << endl;
 		ifile.read((char*)&radius, sizeof(float));
@@ -450,11 +450,7 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		if (ifile.eof()) {
 			break;
 		}
-		//currentNode = findPoint(index);
-		if (currentNode == nullptr) {
-			//cout << index << endl;
-			return false;
-		}
+		currentNode = findPoint(index);
 		currentNode->index = index;
 		currentNode->dataCount = datacount;
 		currentNode->dimension = dimension;
@@ -463,55 +459,58 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 		currentNode->pageNumer = pageNumber;
 		currentNode->slot = slotNumer;
 		//printVector(center, d);
-		printf("index:%d datacount:%d dimension:%d pageNumber:%d SlotNumber: %d  Radius:%f \n", index, datacount, dimension, pageNumber, slotNumer, radius);
+		//printf("index:%d datacount:%d dimension:%d pageNumber:%d SlotNumber: %d  Radius:%f \n", index[0], datacount, dimension, pageNumber, slotNumer, radius);
 		//cout << index << datacount << dimension << pageNumber << slotNumer << endl;
 	}
 	ifile.close();
 	return true;
 }
 
-//bool BallTree::restoreTree(const char* index_path, int d) {
-//	//cout << index_path << endl;
-//	ifstream ifile("index.txt", ios::binary);
-//	Node * currentNode;
-//	while (!ifile.eof()) {
-//		int index, datacount, dimension, pageNumber;
-//		float * center = new float[d];
-//		float radius;
-//		int slotNumer;
-//		ifile.read((char*)&index, sizeof(int));
-//		ifile.read((char*)&datacount, sizeof(int));
-//		ifile.read((char*)&dimension, sizeof(int));
-//		//ifile.read((char*)center, sizeof(float) * d);
-//		for (int i = 0; i < d; ++i) {
-//			ifile.read((char*)&center[i], sizeof(float));
-//			//printf("%f ", center[i]);
-//		}
-//		ifile.read((char*)&radius, sizeof(float));
-//		ifile.read((char*)&pageNumber, sizeof(int));
-//		ifile.read((char*)&slotNumer, sizeof(int));
-//		if (ifile.eof()) {
-//			break;
-//		}
-//		currentNode = findPoint(index);
-//		if (currentNode == nullptr) {
-//			//cout << index << endl;
-//			return false;
-//		}
-//		currentNode->index = index;
-//		currentNode->dataCount = datacount;
-//		currentNode->dimension = dimension;
-//		currentNode->center = center;
-//		currentNode->radius = radius;
-//		currentNode->pageNumer = pageNumber;
-//		currentNode->slot = slotNumer;
-//		//printVector(center, d);
-//		//printf("index:%d datacount:%d dimension:%d pageNumber:%d SlotNumber: %d  Radius:%f \n", index, datacount, dimension, pageNumber, slotNumer, radius);
-//		//cout << index << datacount << dimension << pageNumber << slotNumer << endl;
-//	}
-//	ifile.close();
-//	return true;
-//}
+Node *  BallTree::findPoint(int * index) {
+	if (index[0] == 1 && index[1] == -1 && index[2] == -1) {
+		root = new Node();
+		return root;
+	}
+
+	Node * currendNode = root;
+	queue <Node *> temp;
+	temp.push(root);
+	while (!temp.empty())
+	{
+		if (temp.front()->index[0] == index[1]) {
+			currendNode = temp.front();
+			break;
+		}
+		if (temp.front()->left != nullptr)
+			temp.push(temp.front()->left);
+		if (temp.front()->right != nullptr)
+			temp.push(temp.front()->right);
+		temp.pop();
+	}
+	if (index[2] == 0) {
+		currendNode->left = new Node();
+		return currendNode->left;
+	}
+	if (index[2] == 1) {
+		currendNode->right = new Node();
+		return currendNode->right;
+	}
+	while (true)
+	{
+		cout << "hhhhh" << endl;
+		int a;
+		cin >> a;
+	}
+}
+
+
+
+
+
+
+
+
+
 //
 //Node *  BallTree::findPoint(int index) {
 //	if (index == 1) {

@@ -20,7 +20,7 @@ public:
 	int pageNumer;			//对应数据的页号	
 	int slot;				//对应数据的槽号	
 
-    Node(int* _index, int _dataCount = -1, int _dimension = -1, float* _center = nullptr, float _radius = 0, int PageNumer = -1, int Slot = -1) {       //构造函数
+    Node(int* _index = nullptr, int _dataCount = -1, int _dimension = -1, float* _center = nullptr, float _radius = 0, int PageNumer = -1, int Slot = -1) {       //构造函数
         index = _index;
         dataCount = _dataCount;
         dimension = _dimension;
@@ -71,7 +71,7 @@ public:
             return;
         }
         if (subroot->data != nullptr) {
-            printf("index:%d radius:%f dataCount:%d center:\n", subroot->index, subroot->radius, subroot->dataCount);
+            printf("index:%d radius:%f dataCount:%d center:\n", subroot->index[0], subroot->radius, subroot->dataCount);
             //printVector(subroot->center, d);
             //for (int i = 0; i < subroot->dataCount; i++) {
             //    printVector(subroot->data[i], d);
@@ -79,15 +79,15 @@ public:
             return;
         }
 		if (subroot->dataCount < N0) {
-			//printVector(subroot->center, d);
-			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
+			printVector(subroot->center, d);
+			printf("index:%d radius:%f dataCount:%d\n", subroot->index[0], subroot->radius, subroot->dataCount);
 			return;
 		}
 			
         printf("center:");
         printVector(subroot->center, d);
 		float a = subroot->radius;
-        printf("index:%d radius:%f dataCount:%d left:%d right:%d  \n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
+        printf("index:%d radius:%f dataCount:%d left:%d right:%d  \n", subroot->index[0], subroot->radius, subroot->dataCount, subroot->left->index[0], subroot->right->index[0]);
 		//printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
 		//printVector(subroot->center, d);
 		preorderTesting(subroot->left, d);
@@ -138,7 +138,7 @@ public:
 		float** data);
 
 	//void readPage(int PageNumber);
-	Node *  findPoint(int index);
+	Node *  findPoint(int * index);
 
 	void DFS(int d, Node* p, float* query);
 };
