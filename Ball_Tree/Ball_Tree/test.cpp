@@ -6,6 +6,7 @@
 
 #define MNIST
 
+
 #ifdef Flat
 char dataset[L] = "Flat";
 int n = 20, d = 2;
@@ -73,6 +74,5 @@ int main() {
 	for (int i = 0; i < qn; i++) {
 		delete[] query[i];
 	}
-
 	return 0;
 }
