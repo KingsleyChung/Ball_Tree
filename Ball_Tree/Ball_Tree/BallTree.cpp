@@ -210,74 +210,82 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 	return slot_num;
 }
 
-//bool BallTree::storeTree(const char* index_path) {
-//	string indexFilePath(index_path);
-//	//ofstream file(indexFilePath, ios::binary);
-//	ofstream file("index.txt", ios::binary | ios::app | ios::out);
-//	if (!file.is_open()) {
-//		//cout << "cannot open the file\n";
-//		return false;
-//	}
-//	file.seekp(0, ios::end);
-//	//queue<Node> qu;
-//	qu.push((*(this->root)));
-//	while (!qu.empty()) {
-//		string st;
-//		string content;
-//		if (qu.front().dataCount < N0) {
-//			int index, dataCount, dimension;
-//			float center1, center2, radius;
-//			index = qu.front().index;
-//			file.write((char*)&index, sizeof(int));
-//			dataCount = qu.front().dataCount;
-//			file.write((char*)&dataCount, sizeof(int));
-//			dimension = qu.front().dimension;
-//			file.write((char*)&dimension, sizeof(int));
-//			float * arr = new float[qu.front().dimension + 1];
-//			for (int i = 1; i <= qu.front().dimension; i++) {
-//				arr[i] = qu.front().center[i];
-//				//cout << arr[i] << ",";
-//				file.write((char*)&arr[i], sizeof(float));
-//			}
-//			//cout << "		";
-//			radius = qu.front().radius;
-//			file.write((char*)&radius, sizeof(float));
-//			int page_index = this->dataFileIndex;
-//			file.write((char*)&page_index, sizeof(int));
-//			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-//			file.write((char*)&slot_index, sizeof(int));
-//			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
-//		}
-//		else {
-//			int index, dataCount, dimension;
-//			float center1, center2, radius;
-//			index = qu.front().index;
-//			file.write((char*)&index, sizeof(int));
-//			dataCount = qu.front().dataCount;
-//			file.write((char*)&dataCount, sizeof(int));
-//			dimension = qu.front().dimension;
-//			file.write((char*)&dimension, sizeof(int));
-//			float * arr = new float[qu.front().dimension + 1];
-//			for (int i = 1; i <= qu.front().dimension; i++) {
-//				arr[i] = qu.front().center[i];
-//				//cout << arr[i] << ",";
-//				file.write((char*)&arr[i], sizeof(float));
-//			}
-//			//cout << "		";
-//			radius = qu.front().radius;
-//			file.write((char*)&radius, sizeof(float));
-//			int page_index = 0, slot_index = 0;
-//			file.write((char*)&page_index, sizeof(int));
-//			file.write((char*)&slot_index, sizeof(int));
-//			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
-//			qu.push(*(qu.front().left));
-//			qu.push(*(qu.front().right));
-//		}
-//		qu.pop();
-//	}
-//	file.close();
-//	return true;
-//}
+bool BallTree::storeTree(const char* index_path) {
+	string indexFilePath(index_path);
+	//ofstream file(indexFilePath, ios::binary);
+	ofstream file("index.txt", ios::binary | ios::app | ios::out);
+	if (!file.is_open()) {
+		cout << "cannot open the file\n";
+		return false;
+	}
+	file.seekp(0, ios::end);
+	//queue<Node> qu;
+	qu.push((*(this->root)));
+	while (!qu.empty()) {
+		string st;
+		string content;
+		if (qu.front().dataCount < N0) {
+			int dataCount, dimension;
+			float center1, center2, radius;
+			int *index = new int[3];
+			for (int i = 0; i < 3; i++) {
+				index[i] = qu.front().index[i];
+				file.write((char*)&index[i], sizeof(int));
+			}
+			file.write((char*)&index, sizeof(int));
+			dataCount = qu.front().dataCount;
+			file.write((char*)&dataCount, sizeof(int));
+			dimension = qu.front().dimension;
+			file.write((char*)&dimension, sizeof(int));
+			float * arr = new float[qu.front().dimension + 1];
+			for (int i = 1; i <= qu.front().dimension; i++) {
+				arr[i] = qu.front().center[i];
+				//cout << arr[i] << ",";
+				file.write((char*)&arr[i], sizeof(float));
+			}
+			//cout << "		";
+			radius = qu.front().radius;
+			file.write((char*)&radius, sizeof(float));
+			int page_index = this->dataFileIndex;
+			file.write((char*)&page_index, sizeof(int));
+			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+			file.write((char*)&slot_index, sizeof(int));
+			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+		}
+		else {
+			int dataCount, dimension;
+			float center1, center2, radius;
+			int *index = new int[3];
+			for (int i = 0; i < 3; i++) {
+				index[i] = qu.front().index[i];
+				file.write((char*)&index[i], sizeof(int));
+			}
+			file.write((char*)&index, sizeof(int));
+			dataCount = qu.front().dataCount;
+			file.write((char*)&dataCount, sizeof(int));
+			dimension = qu.front().dimension;
+			file.write((char*)&dimension, sizeof(int));
+			float * arr = new float[qu.front().dimension + 1];
+			for (int i = 1; i <= qu.front().dimension; i++) {
+				arr[i] = qu.front().center[i];
+				//cout << arr[i] << ",";
+				file.write((char*)&arr[i], sizeof(float));
+			}
+			//cout << "		";
+			radius = qu.front().radius;
+			file.write((char*)&radius, sizeof(float));
+			int page_index = 0, slot_index = 0;
+			file.write((char*)&page_index, sizeof(int));
+			file.write((char*)&slot_index, sizeof(int));
+			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+			qu.push(*(qu.front().left));
+			qu.push(*(qu.front().right));
+		}
+		qu.pop();
+	}
+	file.close();
+	return true;
+}
 
 int *BallTree::readData(int pageNumer, int slot,int d) {
 	//string indexFilePath(index_path);
