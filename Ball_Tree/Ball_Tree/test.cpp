@@ -5,6 +5,7 @@
 
 #define NETFLIX
 
+
 #ifdef Flat
 char dataset[L] = "Flat";
 int n = 20, d = 2;
@@ -59,19 +60,21 @@ int main() {
 	//ball_tree2.restoreTree(index_path, d);
 	//ball_tree2.preorderPrint(d);
 
+
 	//for (int i = 0; i < qn; i++) {
 	//	int index = ball_tree2.mipSearch(d, query[i]);
 	//	fprintf(fout, "%d\n", index);
 	//}
 	//fclose(fout);
 
+
 	//for (int i = 0; i < n; i++) {
 	//	delete[] data[i];
 	//}
+	/*for (int i = 0; i < qn; i++) {
+		delete[] query[i];
+	}*/
 
-	//for (int i = 0; i < qn; i++) {
-	//	delete[] query[i];
-	//}
 	int a;
 	cin >> a;
 	return 0;
