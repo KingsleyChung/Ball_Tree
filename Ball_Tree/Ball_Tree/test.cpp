@@ -2,22 +2,8 @@
 
 #include "BallTree.h"
 #include "Utility.h"
-#include "Compare.h"
 
 #define MNIST
-
-
-#ifdef Flat
-char dataset[L] = "Flat";
-int n = 20, d = 2;
-int qn = 1000;
-#endif
-
-#ifdef KINGSLEY
-char dataset[L] = "Kingsley";
-int n = 20, d = 4;
-int qn = 1000;
-#endif
 
 #ifdef MNIST
 char dataset[L] = "Mnist";
@@ -62,7 +48,7 @@ int main() {
 
 	for (int i = 0; i < qn; i++) {
 		int index = ball_tree2.mipSearch(d, query[i]);
-        cout << "index: " << index << endl;
+        //cout << "index: " << index << endl;
 		fprintf(fout, "%d\n", index);
 	}
 	fclose(fout);

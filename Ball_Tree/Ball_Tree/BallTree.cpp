@@ -196,7 +196,7 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 	file.close();
 	return slot_num;
 }
-//
+
 bool BallTree::storeTree(const char* index_path) {
 	string indexFilePath(index_path);
 	ofstream file("INDEX/index.txt", ios::binary | ios::app | ios::out);
@@ -350,11 +350,6 @@ void BallTree::DFS(int d, Node* p, float* query) {
 		DFS(d, p->left, query);
 	if (p->right != NULL)
 		DFS(d, p->right, query);
-}
-
-bool BallTree::insertData(int d, float* data) {
-	//中心点的选取
-	return true;
 }
 
 bool BallTree::deleteData(int d, float* data) {
