@@ -3,8 +3,7 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define NETFLIX
-
+#define MNIST
 
 #ifdef Flat
 char dataset[L] = "Flat";
@@ -20,7 +19,7 @@ int qn = 1000;
 
 #ifdef MNIST
 char dataset[L] = "Mnist";
-int n = 600, d = 50;
+int n = 60000, d = 50;
 int qn = 1000;
 #endif
 
@@ -60,6 +59,7 @@ int main() {
 	ball_tree2.restoreTree(index_path, d);
 	for (int i = 0; i < qn; i++) {
 		int index = ball_tree2.mipSearch(d, query[i]);
+		cout << index << endl;
 		fprintf(fout, "%d\n", index);
 	}
 	fclose(fout);
