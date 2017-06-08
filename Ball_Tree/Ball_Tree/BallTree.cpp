@@ -209,7 +209,7 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 	file.close();
 	return slot_num;
 }
-
+//
 bool BallTree::storeTree(const char* index_path) {
 	string indexFilePath(index_path);
 	//ofstream file(indexFilePath, ios::binary);
