@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <queue>
+#include <fstream>
 using namespace std;//for testing
 #define N0 20
 
@@ -57,59 +58,13 @@ public:
 		int d,
 		float** data);
 
-    void buildSubTree(Node* &subroot, int* index, int n, int d, float** &data);              //建立二叉树
+    void buildSubTree(Node* &subroot, int* index, int n, int d, float** &data);                     //建立二叉树
     void MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data);      //分裂
     float* FindFurthestData(float* &x, float** &data, int n, int d);                                //寻找距离最远的数据
     int CloserTo(float* &selectedData, float* &A, float* &B, int d);                                //比较选定点距离A、B哪个比较近，距离A较近或距离A、B相等返回1，其他返回2
     float* FindCenter(float** &data, int n, int d);                                                 //计算圆心
     float DistanceBetween(float* &pointA, float* &pointB, int d);                                   //计算两向量的距离
-    void preorderPrint(int d) {// for testing                                                       //先序遍历并打印相关信息（测试用）
-        preorderTesting(root, d);
-    }
-    void preorderTesting(Node* subroot, int d) { // for testing                                     //先序遍历并打印相关信息（测试用）
-        if (subroot == nullptr) {
-            return;
-        }
-        if (subroot->data != nullptr) {
-            //printf("index:%d radius:%f dataCount:%d center:\n", subroot->index[0], subroot->radius, subroot->dataCount);
-            //printVector(subroot->center, d);
-            //for (int i = 0; i < subroot->dataCount; i++) {
-            //    printVector(subroot->data[i], d);
-            //}
-            return;
-        }
-		if (subroot->dataCount < N0) {
-			//printVector(subroot->center, d);
-			//printf("index:%d radius:%f dataCount:%d\n", subroot->index[0], subroot->radius, subroot->dataCount);
-			return;
-		}
-			
-        //printf("center:");
-        //printVector(subroot->center, d);
-		float a = subroot->radius;
-        //printf("index:%d radius:%f dataCount:%d left:%d right:%d  \n", subroot->index[0], subroot->radius, subroot->dataCount, subroot->left->index[0], subroot->right->index[0]);
-		//printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
-		//printVector(subroot->center, d);
-		preorderTesting(subroot->left, d);
-        preorderTesting(subroot->right, d);
-    }
 
-    //void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
-    //    cout << "[" << data[0] << "]";
-    //    cout << "(";
-    //    for (int i = 1; i < d; i++) {
-    //        cout << data[i] << ", ";
-    //    }
-    //    cout << data[d] << ")\n";
-    //}
-	void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
-		//cout << "[" << data[0] << "]";
-		cout << "(";
-		for (int i = 0; i < d; i++) {
-			cout << data[i] << ", ";
-		}
-		cout  << ")\n";
-	}
 	bool storeTree(
 		const char* index_path);
 
@@ -137,7 +92,6 @@ public:
 		int d,
 		float** data);
 
-	//void readPage(int PageNumber);
 	Node *  findPoint(int * index);
 
 	void DFS(int d, Node* p, float* query);

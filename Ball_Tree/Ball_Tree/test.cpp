@@ -2,6 +2,7 @@
 
 #include "BallTree.h"
 #include "Utility.h"
+#include "Compare.h"
 
 #define MNIST
 
@@ -57,9 +58,10 @@ int main() {
 
 	BallTree ball_tree2;
 	ball_tree2.restoreTree(index_path, d);
+
 	for (int i = 0; i < qn; i++) {
 		int index = ball_tree2.mipSearch(d, query[i]);
-		cout << index << endl;
+        cout << "index: " << index << endl;
 		fprintf(fout, "%d\n", index);
 	}
 	fclose(fout);
@@ -71,6 +73,6 @@ int main() {
 	for (int i = 0; i < qn; i++) {
 		delete[] query[i];
 	}
-	cout << "hhhhjiesu" << endl;
+
 	return 0;
 }
