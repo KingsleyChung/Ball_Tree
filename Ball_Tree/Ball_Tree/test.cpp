@@ -3,7 +3,7 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define NETFLIX
+#define MNIST
 
 
 #ifdef Flat
@@ -72,5 +72,7 @@ int main() {
 		delete[] query[i];
 	}
 	cout << "hhhhjiesu" << endl;
+	int a;
+	cin >> a;
 	return 0;
 }
