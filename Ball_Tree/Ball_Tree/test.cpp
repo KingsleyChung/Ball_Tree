@@ -3,9 +3,9 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define MNIST
+#define NETFLIX
 
-#ifdef FLAT
+#ifdef Flat
 char dataset[L] = "Flat";
 int n = 20, d = 2;
 int qn = 1000;
@@ -47,29 +47,32 @@ int main() {
 	BallTree ball_tree1;
 	ball_tree1.buildTree(n, d, data);
 	ball_tree1.storeTree(index_path);
+	ball_tree1.preorderPrint(d);
+	//if (!read_data(qn, d, query, query_path));
+	//FILE* fout = fopen(output_path, "w");
+	//if (!fout) {
+	//	printf("can't open %s!\n", output_path);
+	//	return 1;
+	//}
 
-	if (!read_data(qn, d, query, query_path));
-	FILE* fout = fopen(output_path, "w");
-	if (!fout) {
-		printf("can't open %s!\n", output_path);
-		return 1;
-	}
+	//BallTree ball_tree2;
+	//ball_tree2.restoreTree(index_path, d);
+	//ball_tree2.preorderPrint(d);
 
-	BallTree ball_tree2;
-	ball_tree2.restoreTree(index_path, d);
-	for (int i = 0; i < qn; i++) {
-		int index = ball_tree2.mipSearch(d, query[i]);
-		fprintf(fout, "%d\n", index);
-	}
-	fclose(fout);
+	//for (int i = 0; i < qn; i++) {
+	//	int index = ball_tree2.mipSearch(d, query[i]);
+	//	fprintf(fout, "%d\n", index);
+	//}
+	//fclose(fout);
 
-	for (int i = 0; i < n; i++) {
-		delete[] data[i];
-	}
+	//for (int i = 0; i < n; i++) {
+	//	delete[] data[i];
+	//}
 
-	for (int i = 0; i < qn; i++) {
-		delete[] query[i];
-	}
-
+	//for (int i = 0; i < qn; i++) {
+	//	delete[] query[i];
+	//}
+	int a;
+	cin >> a;
 	return 0;
 }

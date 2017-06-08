@@ -70,15 +70,15 @@ public:
             return;
         }
         if (subroot->data != nullptr) {
-            printf("index:%d radius:%f dataCount:%d center:", subroot->index, subroot->radius, subroot->dataCount);
-            printVector(subroot->center, d);
-            for (int i = 0; i < subroot->dataCount; i++) {
-                printVector(subroot->data[i], d);
-            }
+            printf("index:%d radius:%f dataCount:%d center:\n", subroot->index, subroot->radius, subroot->dataCount);
+            //printVector(subroot->center, d);
+            //for (int i = 0; i < subroot->dataCount; i++) {
+            //    printVector(subroot->data[i], d);
+            //}
             return;
         }
 		if (subroot->dataCount < N0) {
-			printVector(subroot->center, d);
+			//printVector(subroot->center, d);
 			printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
 			return;
 		}
@@ -86,9 +86,9 @@ public:
         //printf("center:");
         //printVector(subroot->center, d);
 		float a = subroot->radius;
-        printf("index:%d radius:%f dataCount:%d left:%d right:%d  ", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
+        printf("index:%d radius:%f dataCount:%d left:%d right:%d  \n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
 		//printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
-		printVector(subroot->center, d);
+		//printVector(subroot->center, d);
 		preorderTesting(subroot->left, d);
         preorderTesting(subroot->right, d);
     }
@@ -103,11 +103,11 @@ public:
     //}
 	void printVector(float* data, int d) {//for testing                                            //将给定向量按照(v1, v2, v3)格式打印（测试用）
 		//cout << "[" << data[0] << "]";
-		//cout << "(";
+		cout << "(";
 		for (int i = 0; i < d; i++) {
-			//cout << data[i] << ", ";
+			cout << data[i] << ", ";
 		}
-		//cout  << ")\n";
+		cout  << ")\n";
 	}
 	bool storeTree(
 		const char* index_path);

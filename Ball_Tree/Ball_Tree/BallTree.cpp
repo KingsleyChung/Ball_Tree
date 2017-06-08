@@ -398,18 +398,21 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 	ifstream ifile("index.txt", ios::binary);
 	Node * currentNode;
 	while (!ifile.eof()) {
-		int index, datacount, dimension, pageNumber;
+		int * index = new int[3];
+		int datacount, dimension, pageNumber;
 		float * center = new float[d];
 		float radius;
 		int slotNumer;
-		ifile.read((char*)&index, sizeof(int));
+		for (int i = 0; i < 3; ++i) {
+			ifile.read((char*)&index[i], sizeof(int));
+		}
 		ifile.read((char*)&datacount, sizeof(int));
 		ifile.read((char*)&dimension, sizeof(int));
-		//ifile.read((char*)center, sizeof(float) * d);
 		for (int i = 0; i < d; ++i) {
 			ifile.read((char*)&center[i], sizeof(float));
 			printf("%f ", center[i]);
 		}
+		cout << endl;
 		ifile.read((char*)&radius, sizeof(float));
 		ifile.read((char*)&pageNumber, sizeof(int));
 		ifile.read((char*)&slotNumer, sizeof(int));
@@ -436,47 +439,87 @@ bool BallTree::restoreTree(const char* index_path, int d) {
 	return true;
 }
 
-Node *  BallTree::findPoint(int index) {
-	if (index == 1) {
+//Node *  BallTree::findPoint(int index) {
+//	//cout << index << endl;
+//	if (index == 1) {
+//		root = new Node();
+//		return root;
+//	}
+//	Node * currentNode = root;
+//	Node * lastNode = root;
+//	int layer = 0;
+//	int result = 1;
+//	while (result < index) {
+//		layer++;
+//		result += pow(2, layer);
+//	}
+//	int temp = index;
+//	int j = layer;
+//	while (currentNode != nullptr) {
+//		if (temp - (result - pow(2, layer)) <= pow(2, j) / 2) {
+//			currentNode = currentNode->left;
+//			j--;
+//		}
+//		else {
+//			currentNode = currentNode->right;
+//			temp = temp - pow(2, j) / 2;
+//			j--;
+//		}
+//		if (lastNode != nullptr && 2 * lastNode->index == index) {
+//			lastNode->left = new Node();
+//			return lastNode->left;
+//		}
+//		else if (lastNode != nullptr && 2 * lastNode->index + 1 == index) {
+//			lastNode->right = new Node();
+//			return lastNode->right;
+//		}
+//		else {
+//			lastNode = currentNode;
+//		}
+//	}
+//	//return nullptr;
+//	while (true)
+//	{
+//		printf("%s", "woqu!!!!!!");
+//		printf("%d\n", &index);
+//	}
+//}
+
+Node *  BallTree::findPoint(int * index) {
+	//根节点则直接返回
+	if (index[0] == 1 && index[1] == -1 && index[2] == -1) {
 		root = new Node();
 		return root;
 	}
+	//广度优先遍历寻找父节点
 	Node * currentNode = root;
-	Node * lastNode = root;
-	int layer = 0;
-	int result = 1;
-	while (result < index) {
-		layer++;
-		result += pow(2, layer);
+	queue<Node *> temp;
+	temp.push(currentNode);
+	while (!temp.empty())
+	{
+		if (temp.front()->index[0] == index[1]) {
+			currentNode = temp.front();
+			break;
+		}
+		if (temp.front()->left != nullptr) {
+			temp.push(temp.front()->left);
+		}
+		if (temp.front()->right != nullptr) {
+			temp.push(temp.front()->right);
+		}
+		temp.pop();
 	}
-	int temp = index;
-	int j = layer;
-	while (currentNode != nullptr) {
-		if (temp - (result - pow(2, layer)) <= pow(2, j) / 2) {
-			currentNode = currentNode->left;
-			j--;
-		}
-		else {
-			currentNode = currentNode->right;
-			temp = temp - pow(2, j) / 2;
-			j--;
-		}
-		if (lastNode != nullptr && 2 * lastNode->index == index) {
-			lastNode->left = new Node();
-			return lastNode->left;
-		}
-		else if (lastNode != nullptr && 2 * lastNode->index + 1 == index) {
-			lastNode->right = new Node();
-			return lastNode->right;
-		}
-		else {
-			lastNode = currentNode;
-		}
+	if (index[2] == 0) {
+		currentNode->left = new Node();
+		return currentNode->left;
 	}
-	//return nullptr;
+	if (index[2] == 1) {
+		currentNode->right = new Node();
+		return currentNode->right;
+	}
 	while (true)
 	{
-		printf("%d\n", index);
+		printf("%s", "woqu!!!!!!");
+		printf("%d\n", &index);
 	}
 }
-
