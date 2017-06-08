@@ -27,11 +27,16 @@ string floatToString(float num) {
 }
 
 bool BallTree::buildTree(int n, int d, float** data) {
-    buildSubTree(root, 1, n, d, data);
+    int* index = new int[3];
+    index[0] = 1;
+    index[1] = -1;
+    index[2] = -1;
+    indexCount = 1;
+    buildSubTree(root, index, n, d, data);
     return true;
 }
 
-void BallTree::buildSubTree(Node* &subroot, int index, int n, int d, float** &data) {
+void BallTree::buildSubTree(Node* &subroot, int* index, int n, int d, float** &data) {
     //如果数据量小于N0，则节点为叶子节点
     if (n < N0) {
         float* center;
@@ -96,12 +101,20 @@ void BallTree::MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, in
     //for (int i = 0; i < dataCountOfLeft; i++) {//for testing
     //    printVector(dataOfLeft[i], d);
     //}
-    buildSubTree(subroot->left, subroot->index * 2, dataCountOfLeft, d, dataOfLeft);
+    int* leftIndex = new int[3];
+    leftIndex[0] = ++indexCount;
+    leftIndex[1] = subroot->index[0];
+    leftIndex[2] = 0;
+    buildSubTree(subroot->left, leftIndex, dataCountOfLeft, d, dataOfLeft);
     //建立右子树
     //for (int i = 0; i < dataCountOfRight; i++) {//for testing
     //    printVector(dataOfRight[i], d);
     //}
-    buildSubTree(subroot->right, subroot->index * 2 + 1, dataCountOfRight, d, dataOfRight);
+    int* rightIndex = new int[3];
+    rightIndex[0] = ++indexCount;
+    rightIndex[1] = subroot->index[0];
+    rightIndex[2] = 1;
+    buildSubTree(subroot->right, rightIndex, dataCountOfRight, d, dataOfRight);
 }
 
 float* BallTree::FindFurthestData(float* &x, float** &data, int n, int d) {
@@ -197,74 +210,74 @@ int BallTree::storeData(float ** data, int firstDimension, int secondDimension) 
 	return slot_num;
 }
 
-bool BallTree::storeTree(const char* index_path) {
-	string indexFilePath(index_path);
-	//ofstream file(indexFilePath, ios::binary);
-	ofstream file("index.txt", ios::binary | ios::app | ios::out);
-	if (!file.is_open()) {
-		//cout << "cannot open the file\n";
-		return false;
-	}
-	file.seekp(0, ios::end);
-	//queue<Node> qu;
-	qu.push((*(this->root)));
-	while (!qu.empty()) {
-		string st;
-		string content;
-		if (qu.front().dataCount < N0) {
-			int index, dataCount, dimension;
-			float center1, center2, radius;
-			index = qu.front().index;
-			file.write((char*)&index, sizeof(int));
-			dataCount = qu.front().dataCount;
-			file.write((char*)&dataCount, sizeof(int));
-			dimension = qu.front().dimension;
-			file.write((char*)&dimension, sizeof(int));
-			float * arr = new float[qu.front().dimension + 1];
-			for (int i = 1; i <= qu.front().dimension; i++) {
-				arr[i] = qu.front().center[i];
-				//cout << arr[i] << ",";
-				file.write((char*)&arr[i], sizeof(float));
-			}
-			//cout << "		";
-			radius = qu.front().radius;
-			file.write((char*)&radius, sizeof(float));
-			int page_index = this->dataFileIndex;
-			file.write((char*)&page_index, sizeof(int));
-			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
-			file.write((char*)&slot_index, sizeof(int));
-			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
-		}
-		else {
-			int index, dataCount, dimension;
-			float center1, center2, radius;
-			index = qu.front().index;
-			file.write((char*)&index, sizeof(int));
-			dataCount = qu.front().dataCount;
-			file.write((char*)&dataCount, sizeof(int));
-			dimension = qu.front().dimension;
-			file.write((char*)&dimension, sizeof(int));
-			float * arr = new float[qu.front().dimension + 1];
-			for (int i = 1; i <= qu.front().dimension; i++) {
-				arr[i] = qu.front().center[i];
-				//cout << arr[i] << ",";
-				file.write((char*)&arr[i], sizeof(float));
-			}
-			//cout << "		";
-			radius = qu.front().radius;
-			file.write((char*)&radius, sizeof(float));
-			int page_index = 0, slot_index = 0;
-			file.write((char*)&page_index, sizeof(int));
-			file.write((char*)&slot_index, sizeof(int));
-			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
-			qu.push(*(qu.front().left));
-			qu.push(*(qu.front().right));
-		}
-		qu.pop();
-	}
-	file.close();
-	return true;
-}
+//bool BallTree::storeTree(const char* index_path) {
+//	string indexFilePath(index_path);
+//	//ofstream file(indexFilePath, ios::binary);
+//	ofstream file("index.txt", ios::binary | ios::app | ios::out);
+//	if (!file.is_open()) {
+//		//cout << "cannot open the file\n";
+//		return false;
+//	}
+//	file.seekp(0, ios::end);
+//	//queue<Node> qu;
+//	qu.push((*(this->root)));
+//	while (!qu.empty()) {
+//		string st;
+//		string content;
+//		if (qu.front().dataCount < N0) {
+//			int index, dataCount, dimension;
+//			float center1, center2, radius;
+//			index = qu.front().index;
+//			file.write((char*)&index, sizeof(int));
+//			dataCount = qu.front().dataCount;
+//			file.write((char*)&dataCount, sizeof(int));
+//			dimension = qu.front().dimension;
+//			file.write((char*)&dimension, sizeof(int));
+//			float * arr = new float[qu.front().dimension + 1];
+//			for (int i = 1; i <= qu.front().dimension; i++) {
+//				arr[i] = qu.front().center[i];
+//				//cout << arr[i] << ",";
+//				file.write((char*)&arr[i], sizeof(float));
+//			}
+//			//cout << "		";
+//			radius = qu.front().radius;
+//			file.write((char*)&radius, sizeof(float));
+//			int page_index = this->dataFileIndex;
+//			file.write((char*)&page_index, sizeof(int));
+//			int slot_index = storeData(qu.front().data, qu.front().dataCount, qu.front().dimension + 1);
+//			file.write((char*)&slot_index, sizeof(int));
+//			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+//		}
+//		else {
+//			int index, dataCount, dimension;
+//			float center1, center2, radius;
+//			index = qu.front().index;
+//			file.write((char*)&index, sizeof(int));
+//			dataCount = qu.front().dataCount;
+//			file.write((char*)&dataCount, sizeof(int));
+//			dimension = qu.front().dimension;
+//			file.write((char*)&dimension, sizeof(int));
+//			float * arr = new float[qu.front().dimension + 1];
+//			for (int i = 1; i <= qu.front().dimension; i++) {
+//				arr[i] = qu.front().center[i];
+//				//cout << arr[i] << ",";
+//				file.write((char*)&arr[i], sizeof(float));
+//			}
+//			//cout << "		";
+//			radius = qu.front().radius;
+//			file.write((char*)&radius, sizeof(float));
+//			int page_index = 0, slot_index = 0;
+//			file.write((char*)&page_index, sizeof(int));
+//			file.write((char*)&slot_index, sizeof(int));
+//			//cout << "index: " << index << " dataCount: " << dataCount << " dimension: " << dimension << " radius: " << radius << " page_index: " << page_index << " slot_index: " << slot_index << endl;
+//			qu.push(*(qu.front().left));
+//			qu.push(*(qu.front().right));
+//		}
+//		qu.pop();
+//	}
+//	file.close();
+//	return true;
+//}
 
 int *BallTree::readData(int pageNumer, int slot,int d) {
 	//string indexFilePath(index_path);
@@ -403,90 +416,90 @@ bool BallTree::deleteData(int d, float* data) {
 	return true;
 }
 
-bool BallTree::restoreTree(const char* index_path, int d) {
-	//cout << index_path << endl;
-	ifstream ifile("index.txt", ios::binary);
-	Node * currentNode;
-	while (!ifile.eof()) {
-		int index, datacount, dimension, pageNumber;
-		float * center = new float[d];
-		float radius;
-		int slotNumer;
-		ifile.read((char*)&index, sizeof(int));
-		ifile.read((char*)&datacount, sizeof(int));
-		ifile.read((char*)&dimension, sizeof(int));
-		//ifile.read((char*)center, sizeof(float) * d);
-		for (int i = 0; i < d; ++i) {
-			ifile.read((char*)&center[i], sizeof(float));
-			//printf("%f ", center[i]);
-		}
-		ifile.read((char*)&radius, sizeof(float));
-		ifile.read((char*)&pageNumber, sizeof(int));
-		ifile.read((char*)&slotNumer, sizeof(int));
-		if (ifile.eof()) {
-			break;
-		}
-		currentNode = findPoint(index);
-		if (currentNode == nullptr) {
-			//cout << index << endl;
-			return false;
-		}
-		currentNode->index = index;
-		currentNode->dataCount = datacount;
-		currentNode->dimension = dimension;
-		currentNode->center = center;
-		currentNode->radius = radius;
-		currentNode->pageNumer = pageNumber;
-		currentNode->slot = slotNumer;
-		//printVector(center, d);
-		//printf("index:%d datacount:%d dimension:%d pageNumber:%d SlotNumber: %d  Radius:%f \n", index, datacount, dimension, pageNumber, slotNumer, radius);
-		//cout << index << datacount << dimension << pageNumber << slotNumer << endl;
-	}
-	ifile.close();
-	return true;
-}
-
-Node *  BallTree::findPoint(int index) {
-	if (index == 1) {
-		root = new Node();
-		return root;
-	}
-	Node * currentNode = root;
-	Node * lastNode = root;
-	int layer = 0;
-	int result = 1;
-	while (result < index) {
-		layer++;
-		result += pow(2, layer);
-	}
-	int temp = index;
-	int j = layer;
-	while (currentNode != nullptr) {
-		if (temp - (result - pow(2, layer)) <= pow(2, j) / 2) {
-			currentNode = currentNode->left;
-			j--;
-		}
-		else {
-			currentNode = currentNode->right;
-			temp = temp - pow(2, j) / 2;
-			j--;
-		}
-		if (lastNode != nullptr && 2 * lastNode->index == index) {
-			lastNode->left = new Node();
-			return lastNode->left;
-		}
-		else if (lastNode != nullptr && 2 * lastNode->index + 1 == index) {
-			lastNode->right = new Node();
-			return lastNode->right;
-		}
-		else {
-			lastNode = currentNode;
-		}
-	}
-	//return nullptr;
-	while (true)
-	{
-		printf("%d\n", index);
-	}
-}
+//bool BallTree::restoreTree(const char* index_path, int d) {
+//	//cout << index_path << endl;
+//	ifstream ifile("index.txt", ios::binary);
+//	Node * currentNode;
+//	while (!ifile.eof()) {
+//		int index, datacount, dimension, pageNumber;
+//		float * center = new float[d];
+//		float radius;
+//		int slotNumer;
+//		ifile.read((char*)&index, sizeof(int));
+//		ifile.read((char*)&datacount, sizeof(int));
+//		ifile.read((char*)&dimension, sizeof(int));
+//		//ifile.read((char*)center, sizeof(float) * d);
+//		for (int i = 0; i < d; ++i) {
+//			ifile.read((char*)&center[i], sizeof(float));
+//			//printf("%f ", center[i]);
+//		}
+//		ifile.read((char*)&radius, sizeof(float));
+//		ifile.read((char*)&pageNumber, sizeof(int));
+//		ifile.read((char*)&slotNumer, sizeof(int));
+//		if (ifile.eof()) {
+//			break;
+//		}
+//		currentNode = findPoint(index);
+//		if (currentNode == nullptr) {
+//			//cout << index << endl;
+//			return false;
+//		}
+//		currentNode->index = index;
+//		currentNode->dataCount = datacount;
+//		currentNode->dimension = dimension;
+//		currentNode->center = center;
+//		currentNode->radius = radius;
+//		currentNode->pageNumer = pageNumber;
+//		currentNode->slot = slotNumer;
+//		//printVector(center, d);
+//		//printf("index:%d datacount:%d dimension:%d pageNumber:%d SlotNumber: %d  Radius:%f \n", index, datacount, dimension, pageNumber, slotNumer, radius);
+//		//cout << index << datacount << dimension << pageNumber << slotNumer << endl;
+//	}
+//	ifile.close();
+//	return true;
+//}
+//
+//Node *  BallTree::findPoint(int index) {
+//	if (index == 1) {
+//		root = new Node();
+//		return root;
+//	}
+//	Node * currentNode = root;
+//	Node * lastNode = root;
+//	int layer = 0;
+//	int result = 1;
+//	while (result < index) {
+//		layer++;
+//		result += pow(2, layer);
+//	}
+//	int temp = index;
+//	int j = layer;
+//	while (currentNode != nullptr) {
+//		if (temp - (result - pow(2, layer)) <= pow(2, j) / 2) {
+//			currentNode = currentNode->left;
+//			j--;
+//		}
+//		else {
+//			currentNode = currentNode->right;
+//			temp = temp - pow(2, j) / 2;
+//			j--;
+//		}
+//		if (lastNode != nullptr && 2 * lastNode->index == index) {
+//			lastNode->left = new Node();
+//			return lastNode->left;
+//		}
+//		else if (lastNode != nullptr && 2 * lastNode->index + 1 == index) {
+//			lastNode->right = new Node();
+//			return lastNode->right;
+//		}
+//		else {
+//			lastNode = currentNode;
+//		}
+//	}
+//	//return nullptr;
+//	while (true)
+//	{
+//		printf("%d\n", index);
+//	}
+//}
 

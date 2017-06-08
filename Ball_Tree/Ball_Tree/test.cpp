@@ -3,7 +3,7 @@
 #include "BallTree.h"
 #include "Utility.h"
 
-#define MNIST
+#define FLAT
 
 #ifdef FLAT
 char dataset[L] = "Flat";
@@ -44,9 +44,11 @@ int main() {
 		return 1;
 	}
 
-	/*BallTree ball_tree1;
+	BallTree ball_tree1;
 	ball_tree1.buildTree(n, d, data);
-	ball_tree1.storeTree(index_path);*/
+    ball_tree1.preorderPrint(d);
+    system("pause");
+	/*ball_tree1.storeTree(index_path);
 
 	if (!read_data(qn, d, query, query_path));
 	FILE* fout = fopen(output_path, "w");
@@ -69,7 +71,7 @@ int main() {
 
 	for (int i = 0; i < qn; i++) {
 		delete[] query[i];
-	}
+	}*/
 
 	return 0;
 }

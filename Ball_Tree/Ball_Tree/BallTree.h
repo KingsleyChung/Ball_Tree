@@ -5,11 +5,11 @@
 #include <iostream>
 #include <queue>
 using namespace std;//for testing
-#define N0 20
+#define N0 3
 
 class Node{
 public:
-    int index;              //序号
+    int* index;             //序号
     int dataCount;          //此分支的数据量
     int dimension;          //维度
     float* center;          //圆心向量
@@ -20,7 +20,7 @@ public:
 	int pageNumer;			//对应数据的页号	
 	int slot;				//对应数据的槽号	
 
-    Node(int _index = -1, int _dataCount = -1, int _dimension = -1, float* _center = nullptr, float _radius = 0, int PageNumer = -1, int Slot = -1) {       //构造函数
+    Node(int* _index, int _dataCount = -1, int _dimension = -1, float* _center = nullptr, float _radius = 0, int PageNumer = -1, int Slot = -1) {       //构造函数
         index = _index;
         dataCount = _dataCount;
         dimension = _dimension;
@@ -36,6 +36,7 @@ public:
 
 class BallTree {
 public:
+    int indexCount = 0;
 	int dataFileIndex = 0;
     Node* root;
 	queue<Node> qu;
@@ -56,7 +57,7 @@ public:
 		int d,
 		float** data);
 
-    void buildSubTree(Node* &subroot, int previousIndex, int n, int d, float** &data);              //建立二叉树
+    void buildSubTree(Node* &subroot, int* index, int n, int d, float** &data);              //建立二叉树
     void MakeBallTreeSplit(float* &A, float* &B, Node* &subroot, int n, int d, float** &data);      //分裂
     float* FindFurthestData(float* &x, float** &data, int n, int d);                                //寻找距离最远的数据
     int CloserTo(float* &selectedData, float* &A, float* &B, int d);                                //比较选定点距离A、B哪个比较近，距离A较近或距离A、B相等返回1，其他返回2
@@ -70,25 +71,43 @@ public:
             return;
         }
         if (subroot->data != nullptr) {
-            //printf("index:%d radius:%f dataCount:%d center:", subroot->index, subroot->radius, subroot->dataCount);
+            printf("index:%d parent:%d branch:", subroot->index[0], subroot->index[1]);
+            if (subroot->index[2] == 0)
+                printf("left\n");
+            else if (subroot->index[2] == 1)
+                printf("right\n");
+            else
+                printf("not a branch\n");
+            printf("radius:%f dataCount:%d center:", subroot->radius, subroot->dataCount);
             printVector(subroot->center, d);
             for (int i = 0; i < subroot->dataCount; i++) {
                 printVector(subroot->data[i], d);
             }
             return;
         }
-		if (subroot->dataCount < N0) {
-			printVector(subroot->center, d);
-			//printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
-			return;
-		}
+		//if (subroot->dataCount < N0) {
+		//	printVector(subroot->center, d);
+		//	//printf("index:%d radius:%f dataCount:%d\n", subroot->index, subroot->radius, subroot->dataCount);
+		//	return;
+		//}
 			
         //printf("center:");
         //printVector(subroot->center, d);
-		float a = subroot->radius;
+		//float a = subroot->radius;
         //printf("index:%d radius:%f dataCount:%d left:%d right:%d  ", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
 		//printf("index:%d radius:%f dataCount:%d left:%d right:%d\n", subroot->index, subroot->radius, subroot->dataCount, subroot->left->index, subroot->right->index);
-		printVector(subroot->center, d);
+		//printVector(subroot->center, d);
+
+        printf("index:%d parent:%d branch:", subroot->index[0], subroot->index[1]);
+        if (subroot->index[2] == 0)
+            printf("left\n");
+        else if (subroot->index[2] == 1)
+            printf("right\n");
+        else
+            printf("not a branch\n");
+        
+        printf("left:%d right:%d\n", subroot->left->index[0], subroot->right->index[0]);
+        
 		preorderTesting(subroot->left, d);
         preorderTesting(subroot->right, d);
     }
